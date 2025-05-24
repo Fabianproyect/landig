@@ -284,7 +284,7 @@
       async function cargarFotoPerfil(userId, token) {
         try {
           const response = await fetch(
-            `http://127.0.0.1:5000/api/users/${userId}/photo`, // Cambiado a /photo en lugar de /upload-photo
+            `https://site.mizaptech.site/api/users/${userId}/photo`, // Cambiado a /photo en lugar de /upload-photo
             {
               method: "GET",
               headers: {
@@ -313,7 +313,7 @@
         formData.append("foto", file);
 
         const response = await fetch(
-          `http://127.0.0.1:5000/api/users/${userId}/upload-photo`,
+          `https://site.mizaptech.site/api/users/${userId}/upload-photo`,
           {
             method: "POST",
             headers: {
@@ -339,7 +339,7 @@
       async function updateProfilePhoto(userId, nombreImagen) {
         const authData = JSON.parse(localStorage.getItem("auth"));
         const response = await fetch(
-          `http://127.0.0.1:5000/api/users/${userId}`,
+          `https://site.mizaptech.site/api/users/${userId}`,
           {
             method: "PUT",
             headers: {
