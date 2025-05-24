@@ -280,7 +280,7 @@
       async function cargarFotoPerfil(userId) {
         try {
           const response = await fetch(
-            `http://192.168.1.103:5000/api/users/${userId}/photo`
+            `https://site.mizaptech.site/api/users/${userId}/photo`
           );
 
           if (!response.ok) {
@@ -308,7 +308,7 @@
           formData.append("foto", file);
 
           const response = await fetch(
-            `http://192.168.1.103:5000/api/users/${usuarioId}/upload-photo`,
+            `https://site.mizaptech.site/api/users/${usuarioId}/upload-photo`,
             {
               method: "POST",
               body: formData,
