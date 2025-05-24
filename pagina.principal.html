@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Red Social - Profesionales</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: #1f1f1f;
+        color: #f0f0f0;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background-color: #2c2c2c;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .nav-buttons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .nav-buttons button {
+        background-color: #f5a623;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: #1f1f1f;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .nav-buttons button:hover {
+        background-color: #e59400;
+      }
+
+      .profile-button {
+        background-color: #f0f0f0;
+        color: #1f1f1f;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .scan-face-button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        margin-left: 10px;
+      }
+
+      .scan-face-button:hover {
+        background-color: #45a049;
+      }
+
+      .logout-button {
+        background-color: #ff4d4d;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        margin-left: 10px;
+      }
+
+      .logout-button:hover {
+        background-color: #ff3333;
+      }
+
+      .feed {
+        padding: 30px 50px;
+      }
+
+      .post {
+        display: flex;
+        background-color: #2e2e2e;
+        border-radius: 20px;
+        margin-bottom: 25px;
+        padding: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .post:hover {
+        transform: translateY(-5px);
+      }
+
+      .post img {
+        width: 150px;
+        height: 150px;
+        border-radius: 15px;
+        object-fit: cover;
+        margin-right: 20px;
+      }
+
+      .post-content {
+        flex: 1;
+      }
+
+      .post-content h3 {
+        color: #f5a623;
+        margin-bottom: 10px;
+      }
+
+      .comment-section {
+        margin-top: 10px;
+      }
+
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 12px;
+        border: none;
+        resize: none;
+        margin-bottom: 10px;
+        background-color: #3a3a3a;
+        color: #f0f0f0;
+      }
+
+      .stars {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+
+      .stars span {
+        font-size: 20px;
+        color: #f5a623;
+        cursor: pointer;
+      }
+
+      button.comment-btn {
+        background-color: #f5a623;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        color: #1f1f1f;
+        cursor: pointer;
+      }
+
+      .welcome-message {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+
+      /* Nuevos estilos para portadas y perfiles */
+      .cover-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 20px 20px 0 0;
+        margin-bottom: 15px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        overflow-y: auto;
+      }
+
+      .modal-content {
+        background-color: #2e2e2e;
+        margin: 5% auto;
+        padding: 0;
+        width: 80%;
+        max-width: 900px;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+        z-index: 1001;
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .profile-header {
+        position: relative;
+      }
+
+      .profile-info {
+        padding: 20px;
+      }
+
+      .profile-name {
+        font-size: 28px;
+        color: #f5a623;
+        margin-bottom: 10px;
+      }
+
+      .profile-bio {
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .profile-stats {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #f5a623;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: #aaa;
+      }
+
+      .portfolio {
+        padding: 20px;
+      }
+
+      .portfolio h3 {
+        margin-bottom: 20px;
+        color: #f5a623;
+        font-size: 22px;
+      }
+
+      .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .portfolio-item {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .portfolio-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .portfolio-item:hover img {
+        transform: scale(1.05);
+      }
+
+      .portfolio-item-info {
+        padding: 10px;
+        background-color: #3a3a3a;
+      }
+
+      .portfolio-item-title {
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+
+      .portfolio-item-desc {
+        font-size: 14px;
+        color: #ccc;
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 5px solid #2e2e2e;
+        position: absolute;
+        bottom: -60px;
+        left: 30px;
+        object-fit: cover;
+      }
+
+      .contact-btn {
+        background-color: #f5a623;
+        color: #1f1f1f;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .contact-btn:hover {
+        background-color: #e59400;
+      }
+
+      /* Estilos responsivos */
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          gap: 15px;
+          padding: 15px;
+        }
+
+        .nav-buttons {
+          width: 100%;
+          overflow-x: auto;
+          padding-bottom: 5px;
+        }
+
+        .post {
+          flex-direction: column;
+        }
+
+        .post img {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: 15px;
+        }
+
+        .modal-content {
+          width: 95%;
+        }
+
+        .portfolio-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+      }
+
+      /* Loading spinner */
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #f5a623;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+        margin: 20px auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      /* Nuevos estilos para la vista de tarjetas */
+      .post-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .profile-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+        border: 2px solid #f5a623;
+      }
+
+      .post-user-info h3 {
+        color: #f5a623;
+        margin-bottom: 5px;
+      }
+
+      .post-user-info p {
+        color: #aaa;
+        font-size: 14px;
+      }
+
+      .post-bio {
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+
+      .post-stats {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        color: #aaa;
+        font-size: 14px;
+      }
+
+      .rating {
+        color: #f5a623 !important;
+        font-weight: bold;
+      }
+
+      .post-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-view,
+      .btn-contact {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: none;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-view {
+        background-color: transparent;
+        color: #f5a623;
+        border: 1px solid #f5a623;
+      }
+
+      .btn-view:hover {
+        background-color: rgba(245, 166, 35, 0.1);
+      }
+
+      .btn-contact {
+        background-color: #f5a623;
+        color: #1f1f1f;
+      }
+
+      .btn-contact:hover {
+        background-color: #e59400;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 30px;
+        color: #aaa;
+        font-size: 18px;
+      }
+
+      /* Nuevos estilos para el formulario de trabajo */
+      .job-form-container {
+        padding: 20px;
+        background-color: #3a3a3a;
+        border-radius: 15px;
+        margin-top: 20px;
+      }
+
+      .job-form-container h3 {
+        color: #f5a623;
+        margin-bottom: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #555;
+        background-color: #2c2c2c;
+        color: #f0f0f0;
+      }
+
+      .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .form-actions button {
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-cancel {
+        background-color: transparent;
+        color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+      }
+
+      .btn-submit {
+        background-color: #f5a623;
+        color: #1f1f1f;
+        border: none;
+      }
+
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        max-width: 300px;
+      }
+
+      .toast.success {
+        background-color: #4caf50;
+      }
+
+      .toast.error {
+        background-color: #ff4d4d;
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+
+      .user-type-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-left: 10px;
+      }
+
+      .user-type-badge.cliente {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .user-type-badge.profesional {
+        background-color: #f5a623;
+        color: #1f1f1f;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="nav-buttons">
+        <button onclick="filter('tatuador')">Tatuadores</button>
+        <button onclick="filter('barbero')">Barberos</button>
+        <button onclick="filter('estilista')">Estilistas</button>
+        <button onclick="filter('perforador')">Perforadores</button>
+        <button onclick="filter('')">Todos</button>
+      </div>
+      <div>
+        <button
+          class="profile-button"
+          onclick="window.location.href='usuario.html'"
+          id="profileButton"
+        >
+          Mi perfil
+        </button>
+        <button
+          class="scan-face-button"
+          onclick="window.location.href='camara.html'"
+        >
+          Escanear rostro
+        </button>
+        <button class="logout-button" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main class="feed" id="feed">
+      <div class="welcome-message" id="welcomeMessage"></div>
+      <!-- Publicaciones inyectadas dinámicamente -->
+    </main>
+
+    <!-- Modal para mostrar el perfil/portafolio -->
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div id="profileContent">
+          <!-- Contenido del perfil inyectado dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para solicitar trabajo -->
+    <div id="jobModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeJobModal()">&times;</span>
+        <div class="job-form-container">
+          <h3>Solicitar trabajo</h3>
+          <form id="jobForm">
+            <div class="form-group">
+              <label for="jobTitle">Título del trabajo</label>
+              <input
+                type="text"
+                id="jobTitle"
+                placeholder="Ej: Corte de cabello, Tatuaje de dragón..."
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="jobDescription">Descripción detallada</label>
+              <textarea
+                id="jobDescription"
+                placeholder="Describe lo que necesitas, incluye detalles importantes..."
+                required
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="jobCategory">Categoría</label>
+              <select id="jobCategory">
+                <option value="tatuaje">Tatuaje</option>
+                <option value="corte">Corte de cabello</option>
+                <option value="piercing">Piercing</option>
+                <option value="barberia">Barbería</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <input type="hidden" id="professionalId" />
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeJobModal()"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn-submit">Solicitar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast para notificaciones -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+      // Datos del usuario actual desde localStorage
+      let currentUser = null;
+      let authToken = null;
+
+      // Variable global para almacenar los profesionales
+      let professionalsData = [];
+
+      // Base URL para las APIs
+      const API_BASE_URL = 'http://localhost:5000';
+      const PORTFOLIO_API_URL = 'http://192.168.1.103:5000/api/portafolio/publico';
+      const JOBS_API_URL = 'http://localhost:5000/api/trabajos/';
+
+      // Inicialización al cargar la página
+      document.addEventListener("DOMContentLoaded", function () {
+        // Cargar datos del usuario desde localStorage
+        loadUserData();
+        
+        // Cargar profesionales desde la API
+        loadProfessionalsFromAPI();
+        
+        // Configurar el formulario de trabajo
+        setupJobForm();
+      });
+
+      // Función para cargar datos del usuario desde localStorage
+      function loadUserData() {
+        try {
+          const authData = localStorage.getItem('authData');
+          if (authData) {
+            const parsedData = JSON.parse(authData);
+            if (parsedData.isAuthenticated && parsedData.user) {
+              currentUser = parsedData.user;
+              authToken = parsedData.token;
+              
+              // Actualizar mensaje de bienvenida
+              const welcomeMessage = document.getElementById("welcomeMessage");
+              welcomeMessage.innerHTML = `Bienvenido ${currentUser.nombre_completo || currentUser.username} 
+                <span class="user-type-badge ${currentUser.tipo}">${capitalizeFirstLetter(currentUser.tipo)}</span>`;
+              
+              // Actualizar botón de perfil
+              const profileButton = document.getElementById("profileButton");
+              profileButton.textContent = `Mi perfil (${currentUser.username})`;
+              
+              // Verificar si el usuario es un profesional
+              if (currentUser.tipo === 'profesional') {
+                showToast('Como profesional, puedes ver otros perfiles pero no puedes solicitar trabajos', 'error');
+              }
+            } else {
+              redirectToLogin();
+            }
+          } else {
+            redirectToLogin();
+          }
+        } catch (error) {
+          console.error("Error al cargar datos del usuario:", error);
+          redirectToLogin();
+        }
+      }
+
+      // Función para redirigir al login si no hay sesión
+      function redirectToLogin() {
+        showToast('Sesión no válida. Por favor inicia sesión.', 'error');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+      }
+
+      // Función para cargar profesionales desde la API
+      async function loadProfessionalsFromAPI() {
+        const feed = document.getElementById("feed");
+        const welcomeMessage = document.getElementById("welcomeMessage").outerHTML;
+
+        // Mostrar loader mientras se cargan los datos
+        feed.innerHTML = `
+          ${welcomeMessage}
+          <div class="loader"></div>
+          <div class="loading-text">Cargando profesionales...</div>
+        `;
+
+        try {
+          const response = await fetch(PORTFOLIO_API_URL);
+          if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+          }
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.message || 'Error al cargar profesionales');
+          }
+
+          // Procesar los datos de la API
+          professionalsData = data.data.map((prof) => {
+            return {
+              id: prof.usuario_id,
+              nombre: prof.nombre,
+              apellido: prof.apellido,
+              nombre_completo: prof.usuario.nombre_completo || `${prof.nombre} ${prof.apellido}`,
+              username: prof.usuario.username,
+              email: prof.usuario.email,
+              ciudad: prof.usuario.ciudad,
+              telefono: prof.usuario.telefono,
+              foto_perfil: prof.usuario.foto_perfil,
+              especialidad: prof.especialidad,
+              descripcion: prof.descripcion,
+              experiencia: prof.experiencia,
+              calificacion_promedio: prof.calificacion_promedio || 0,
+              genero: prof.genero,
+              portafolio: prof.portafolio || [],
+              trabajosRealizados: prof.estadisticas?.trabajos_realizados || 0,
+              clientes: prof.estadisticas?.clientes_atendidos || 0,
+              bio: generateBio(
+                prof.especialidad,
+                prof.usuario.nombre_completo || `${prof.nombre} ${prof.apellido}`,
+                prof.usuario.ciudad
+              ),
+            };
+          });
+
+          renderPosts();
+        } catch (error) {
+          console.error("Error al cargar profesionales:", error);
+          feed.innerHTML = `
+            ${welcomeMessage}
+            <div style="color: #ff4d4d; text-align: center; margin-top: 20px;">
+              Error al cargar los profesionales: ${error.message}
+            </div>
+          `;
+        }
+      }
+
+      // Función para renderizar las publicaciones
+      function renderPosts(filtro) {
+        const feed = document.getElementById("feed");
+        const welcomeMessage = document.getElementById("welcomeMessage");
+
+        // Limpiar el feed excepto el mensaje de bienvenida
+        feed.innerHTML = "";
+        feed.appendChild(welcomeMessage);
+
+        // Filtrar profesionales si hay un filtro aplicado
+        const filtrados = filtro
+          ? professionalsData.filter((p) => p.especialidad === filtro)
+          : professionalsData;
+
+        if (filtrados.length === 0) {
+          const noResults = document.createElement("div");
+          noResults.className = "no-results";
+          noResults.textContent =
+            "No se encontraron profesionales con este filtro";
+          feed.appendChild(noResults);
+          return;
+        }
+
+        // Crear y agregar las tarjetas de profesionales
+        filtrados.forEach((prof) => {
+          // No mostrar al usuario actual si es profesional
+          if (currentUser && currentUser.tipo === 'profesional' && currentUser.id === prof.id) {
+            return;
+          }
+          
+          const postDiv = document.createElement("div");
+          postDiv.className = "post";
+          postDiv.setAttribute("data-id", prof.id);
+
+          postDiv.innerHTML = `
+            <div class="post-header">
+              <img src="/placeholder.svg" alt="${
+                prof.nombre_completo
+              }" class="profile-img" id="profile-img-${prof.id}">
+              <div class="post-user-info">
+                <h3>${prof.nombre_completo}</h3>
+                <p>${capitalizeFirstLetter(
+                  prof.especialidad
+                )} • ${capitalizeFirstLetter(prof.ciudad)}</p>
+              </div>
+            </div>
+            <div class="post-body">
+              <p class="post-bio">${prof.bio}</p>
+              <div class="post-stats">
+                <span class="rating">${generateStars(
+                  prof.calificacion_promedio
+                )} ${prof.calificacion_promedio}</span>
+                <span>• ${prof.trabajosRealizados} trabajos</span>
+                <span>• ${prof.clientes} clientes</span>
+              </div>
+            </div>
+            <div class="post-actions">
+              <button class="btn-view" onclick="showProfile(${
+                prof.id
+              })">Ver perfil</button>
+              <button class="btn-contact" onclick="contactProfessional(${
+                prof.id
+              })">${currentUser && currentUser.tipo === 'profesional' ? 'Ver detalles' : 'Solicitar trabajo'}</button>
+            </div>
+          `;
+
+          // Cargar la foto de perfil del profesional usando el ID correcto
+          const imgElement = postDiv.querySelector(`#profile-img-${prof.id}`);
+          loadProfileImage(prof, imgElement);
+
+          feed.appendChild(postDiv);
+        });
+      }
+
+      // Función para cargar la imagen de perfil
+      function loadProfileImage(professional, imgElement) {
+          // Ruta relativa a la imagen por defecto (desde cualquier HTML)
+          const DEFAULT_IMAGE = '../img/defaul.jpg'; 
+          
+          if (professional.foto_perfil) {
+              // Intenta cargar la imagen del perfil
+              imgElement.src = `http://192.168.1.103:5000/api/imagen/${professional.foto_perfil}`;
+              
+              // Si falla, intenta con la imagen local
+              imgElement.onerror = function() {
+                  imgElement.src = DEFAULT_IMAGE;
+                  
+                  // Si falla la imagen local, usa una genérica
+                  imgElement.onerror = function() {
+                      const genderImage = professional.genero === 'femenino' 
+                          ? `https://randomuser.me/api/portraits/women/${professional.id % 50}.jpg`
+                          : `https://randomuser.me/api/portraits/men/${professional.id % 50}.jpg`;
+                      imgElement.src = genderImage;
+                  };
+              };
+          } else {
+              // Si no hay foto de perfil, usa directamente la imagen local
+              imgElement.src = DEFAULT_IMAGE;
+              
+              // Fallback por si falla
+              imgElement.onerror = function() {
+                  const genderImage = professional.genero === 'femenino' 
+                      ? `https://randomuser.me/api/portraits/women/${professional.id % 50}.jpg`
+                      : `https://randomuser.me/api/portraits/men/${professional.id % 50}.jpg`;
+                  imgElement.src = genderImage;
+              };
+          }
+      }
+
+      // Función para mostrar el perfil completo
+      function showProfile(id) {
+        const profesional = professionalsData.find((p) => p.id === id);
+        if (!profesional) return;
+
+        const profileContent = document.getElementById("profileContent");
+        profileContent.innerHTML = `
+          <div class="profile-header">
+            <img src="${getRandomCoverImage()}" class="cover-image">
+            <img src="/placeholder.svg" alt="${
+              profesional.nombre_completo
+            }" class="profile-avatar" id="modal-profile-img-${profesional.id}">
+          </div>
+          <div class="profile-info">
+            <h2 class="profile-name">${profesional.nombre_completo}</h2>
+            <p><strong>Especialidad:</strong> ${capitalizeFirstLetter(
+              profesional.especialidad
+            )}</p>
+            <p><strong>Ubicación:</strong> ${capitalizeFirstLetter(
+              profesional.ciudad
+            )}</p>
+            <p class="profile-bio">${profesional.bio}</p>
+            ${
+              profesional.experiencia
+                ? `<p><strong>Experiencia:</strong> ${profesional.experiencia}</p>`
+                : ""
+            }
+            
+            <div class="profile-stats">
+              <div class="stat">
+                <div class="stat-number">${
+                  profesional.calificacion_promedio
+                }</div>
+                <div class="stat-label">Calificación</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">${profesional.trabajosRealizados}</div>
+                <div class="stat-label">Trabajos</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">${profesional.clientes}</div>
+                <div class="stat-label">Clientes</div>
+              </div>
+            </div>
+            
+            ${currentUser && currentUser.tipo !== 'profesional' ? 
+              `<button class="contact-btn" onclick="contactProfessional(${profesional.id})">Solicitar trabajo</button>` : 
+              ''
+            }
+          </div>
+          
+          <div class="portfolio">
+            <h3>Portafolio</h3>
+            ${
+              profesional.portafolio.length > 0
+                ? `
+                <div class="portfolio-grid">
+                  ${profesional.portafolio
+                    .map(
+                      (item) => `
+                    <div class="portfolio-item">
+                      <img src="${
+                        item.imagen_url || getRandomPortfolioImage()
+                      }" alt="${item.titulo}">
+                      <div class="portfolio-item-info">
+                        <h4 class="portfolio-item-title">${item.titulo}</h4>
+                        <p class="portfolio-item-desc">${item.descripcion}</p>
+                      </div>
+                    </div>
+                  `
+                    )
+                    .join("")}
+                </div>
+              `
+                : '<p style="color: #aaa; text-align: center;">Este profesional aún no ha subido trabajos a su portafolio</p>'
+            }
+          </div>
+        `;
+
+        // Cargar la foto de perfil del profesional en el modal
+        const modalImg = document.getElementById(
+          `modal-profile-img-${profesional.id}`
+        );
+        loadProfileImage(profesional, modalImg);
+
+        // Mostrar el modal
+        document.getElementById("profileModal").style.display = "block";
+      }
+
+      // Función para contactar al profesional (abrir modal de trabajo)
+      function contactProfessional(id) {
+        // Verificar si el usuario está autenticado y es cliente
+        if (!currentUser) {
+          showToast('Debes iniciar sesión para solicitar un trabajo', 'error');
+          return;
+        }
+        
+        if (currentUser.tipo === 'profesional') {
+          showToast('Como profesional, no puedes solicitar trabajos a otros profesionales', 'error');
+          return;
+        }
+        
+        const profesional = professionalsData.find((p) => p.id === id);
+        if (!profesional) return;
+        
+        // Cerrar el modal de perfil si está abierto
+        closeModal();
+        
+        // Configurar el formulario con los datos del profesional
+        document.getElementById('professionalId').value = profesional.id;
+        
+        // Preseleccionar la categoría basada en la especialidad
+        const categorySelect = document.getElementById('jobCategory');
+        switch(profesional.especialidad) {
+          case 'tatuador':
+            categorySelect.value = 'tatuaje';
+            break;
+          case 'barbero':
+            categorySelect.value = 'barberia';
+            break;
+          case 'perforador':
+            categorySelect.value = 'piercing';
+            break;
+          case 'estilista':
+            categorySelect.value = 'corte';
+            break;
+          default:
+            categorySelect.value = 'otro';
+        }
+        
+        // Mostrar el modal de trabajo
+        document.getElementById('jobModal').style.display = 'block';
+      }
+
+      // Configurar el formulario de trabajo
+      function setupJobForm() {
+        const jobForm = document.getElementById('jobForm');
+        
+        jobForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          // Verificar si el usuario está autenticado
+          if (!currentUser || !authToken) {
+            showToast('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'error');
+            setTimeout(() => window.location.href = 'index.html', 2000);
+            return;
+          }
+          
+          // Obtener datos del formulario
+          const titulo = document.getElementById('jobTitle').value;
+          const descripcion = document.getElementById('jobDescription').value;
+          const categoria = document.getElementById('jobCategory').value;
+          const profesionalId = parseInt(document.getElementById('professionalId').value);
+          
+          // Crear objeto de trabajo
+          const nuevoTrabajo = {
+            titulo,
+            descripcion,
+            cliente_id: currentUser.id,
+            profesional_id: profesionalId,
+            categoria
+          };
+          
+          try {
+            // Enviar solicitud a la API
+            const response = await fetch(JOBS_API_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+              },
+              body: JSON.stringify(nuevoTrabajo)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+              showToast('Trabajo solicitado exitosamente', 'success');
+              closeJobModal();
+              
+              // Limpiar formulario
+              jobForm.reset();
+            } else {
+              throw new Error(data.message || 'Error al solicitar el trabajo');
+            }
+          } catch (error) {
+            console.error('Error al crear trabajo:', error);
+            showToast(`Error: ${error.message}`, 'error');
+          }
+        });
+      }
+
+      // Función para cerrar el modal de trabajo
+      function closeJobModal() {
+        document.getElementById('jobModal').style.display = 'none';
+        document.getElementById('jobForm').reset();
+      }
+
+      // Función para mostrar notificaciones toast
+      function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        
+        setTimeout(() => {
+          toast.className = toast.className.replace('show', '');
+        }, 3000);
+      }
+
+      // Función para generar una biografía basada en la especialidad
+      function generateBio(especialidad, nombre, ciudad) {
+        const bios = {
+          tatuador: `${nombre} es un talentoso tatuador con sede en ${ciudad}, especializado en una variedad de estilos. Con años de experiencia, transforma ideas en arte corporal permanente.`,
+          barbero: `${nombre} es un barbero profesional en ${ciudad}, experto en cortes clásicos y modernos. Su atención al detalle y habilidades con la navaja lo distinguen.`,
+          estilista: `${nombre} es una estilista creativa en ${ciudad}, especializada en coloración y cortes modernos. Su enfoque personalizado garantiza que cada cliente luzca su mejor versión.`,
+          perforador: `${nombre} es un perforador profesional en ${ciudad}, con amplia experiencia en colocación segura y estética de piercings. Utiliza materiales de la más alta calidad.`,
+        };
+
+        return (
+          bios[especialidad] ||
+          `${nombre} es un profesional establecido en ${ciudad}, con años de experiencia en su campo. Comprometido con la excelencia y la satisfacción del cliente.`
+        );
+      }
+
+      // Función para capitalizar la primera letra
+      function capitalizeFirstLetter(string) {
+        return string
+          ? string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+          : "";
+      }
+
+      // Función para obtener una imagen de portada aleatoria
+      function getRandomCoverImage() {
+        const images = [
+          "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&h=300&fit=crop",
+          "https://images.unsplash.com/photo-1483181957632-8bda974cbc91?w=900&h=300&fit=crop",
+          "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&h=300&fit=crop",
+        ];
+        return images[Math.floor(Math.random() * images.length)];
+      }
+
+      // Función para obtener una imagen de portafolio aleatoria
+      function getRandomPortfolioImage() {
+        const specialties = ['tattoo', 'barber', 'hairstyle', 'piercing'];
+        const specialty = specialties[Math.floor(Math.random() * specialties.length)];
+        return `https://source.unsplash.com/random/300x300/?${specialty},${Math.random()}`;
+      }
+
+      // Función para generar estrellas de calificación
+      function generateStars(rating) {
+        let starsHTML = "";
+        const numericRating =
+          typeof rating === "number" ? rating : parseFloat(rating) || 0;
+        const fullStars = Math.floor(numericRating);
+        const hasHalfStar = numericRating % 1 >= 0.5;
+
+        for (let i = 1; i <= 5; i++) {
+          if (i <= fullStars) {
+            starsHTML += "★";
+          } else if (i === fullStars + 1 && hasHalfStar) {
+            starsHTML += "½";
+          } else {
+            starsHTML += "☆";
+          }
+        }
+
+        return starsHTML;
+      }
+
+      // Función para filtrar por especialidad
+      function filter(tipo) {
+        renderPosts(tipo);
+      }
+
+      // Función para cerrar el modal
+      function closeModal() {
+        document.getElementById("profileModal").style.display = "none";
+      }
+
+      // Función para cerrar sesión
+      function logout() {
+        localStorage.removeItem('authData');
+        window.location.href = "index.html";
+      }
+
+      // Cerrar el modal si se hace clic fuera del contenido
+      window.onclick = function (event) {
+        const profileModal = document.getElementById("profileModal");
+        const jobModal = document.getElementById("jobModal");
+        
+        if (event.target === profileModal) {
+          closeModal();
+        }
+        
+        if (event.target === jobModal) {
+          closeJobModal();
+        }
+      };
+    </script>
+  </body>
+</html>

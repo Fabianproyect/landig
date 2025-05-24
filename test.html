@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Usuarios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .profesional {
+      background-color: #e6f7ff;
+    }
+    .cliente {
+      background-color: #fff7e6;
+    }
+    .foto-perfil {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <h1>Usuarios Registrados</h1>
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Foto</th>
+        <th>Nombre Completo</th>
+        <th>Usuario</th>
+        <th>Tipo</th>
+        <th>Ciudad</th>
+        <th>Fecha Registro</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Los datos se llenan dinámicamente con JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('http://192.168.1.103:5000/api/users')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const tbody = document.querySelector('#usersTable tbody');
+          
+          if (data.length === 0) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td colspan="7" style="text-align: center;">No hay usuarios registrados</td>';
+            tbody.appendChild(tr);
+            return;
+          }
+
+          data.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.className = user.tipo === 'profesional' ? 'profesional' : 'cliente';
+            
+            // Manejar la foto de perfil (si existe)
+            let fotoHtml = '<div style="width:50px;height:50px;background:#eee;border-radius:50%;"></div>';
+            if (user.foto_perfil) {
+              const fotoUrl = user.foto_perfil.startsWith('http') ? 
+                user.foto_perfil : 
+                `http://192.168.1.103:5000${user.foto_perfil}`;
+              fotoHtml = `<img src="${fotoUrl}" alt="Foto de perfil" class="foto-perfil" onerror="this.parentNode.innerHTML='<div style=\\'width:50px;height:50px;background:#eee;border-radius:50%;\\'></div>'">`;
+            }
+
+            tr.innerHTML = `
+              <td>${user.id}</td>
+              <td>${fotoHtml}</td>
+              <td>${user.nombre_completo || 'N/A'}</td>
+              <td>${user.username || 'N/A'}</td>
+              <td>${user.tipo === 'profesional' ? 'Profesional' : 'Cliente'}</td>
+              <td>${user.ciudad || 'N/A'}</td>
+              <td>${new Date(user.fecha_registro).toLocaleDateString()}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          console.error('Error al obtener los usuarios:', error);
+          const tbody = document.querySelector('#usersTable tbody');
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td colspan="7" style="text-align: center; color: red;">
+              Error al cargar los datos: ${error.message}
+            </td>`;
+          tbody.appendChild(tr);
+        });
+    });
+  </script>
+</body>
+</html>

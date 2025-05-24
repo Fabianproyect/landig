@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Social - Portal de Profesionales</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root {
+      --primary: #f5a623;
+      --primary-dark: #e59400;
+      --success: #4CAF50;
+      --success-dark: #45a049;
+      --danger: #ff4d4d;
+      --danger-dark: #ff3333;
+      --pdf-color: #4361ee;
+      --pdf-color-dark: #3a56d4;
+      --dark-bg: rgba(44, 44, 44, 0.9);
+      --card-bg: rgba(46, 46, 46, 0.85);
+      --input-bg: rgba(58, 58, 58, 0.9);
+      --border-color: #3a3a3a;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url(https://media.istockphoto.com/id/1144182437/es/vector/patr%C3%B3n-sin-costuras-con-cr%C3%A1neos-micr%C3%B3fonos-y-rosas.jpg?s=612x612&w=0&k=20&c=2NOfCOfG9YtPDnG0g6SW97ixHPLxkrwk0NADaTR_aMI=) no-repeat center center fixed;
+      background-size: cover;
+      color: #f0f0f0;
+    }
+    
+    .header {
+      background-color: var(--dark-bg);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #1f1f1f;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+      color: #1f1f1f;
+    }
+    
+    .btn-success {
+      background-color: var(--success);
+      border-color: var(--success);
+    }
+    
+    .btn-success:hover {
+      background-color: var(--success-dark);
+      border-color: var(--success-dark);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      border-color: var(--danger);
+    }
+    
+    .btn-danger:hover {
+      background-color: var(--danger-dark);
+      border-color: var(--danger-dark);
+    }
+    
+    .btn-pdf {
+      background-color: var(--pdf-color);
+      border-color: var(--pdf-color);
+      color: white;
+    }
+    
+    .btn-pdf:hover {
+      background-color: var(--pdf-color-dark);
+      border-color: var(--pdf-color-dark);
+      color: white;
+    }
+    
+    .btn-light {
+      background-color: #f0f0f0;
+      border-color: #f0f0f0;
+      color: #1f1f1f;
+    }
+    
+    .btn-light:hover {
+      background-color: #e0e0e0;
+      border-color: #e0e0e0;
+      color: #1f1f1f;
+    }
+    
+    .card {
+      background-color: var(--card-bg);
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    }
+    
+    .nav-tabs {
+      background-color: var(--card-bg);
+      border-radius: 15px;
+      border: none;
+      overflow: hidden;
+    }
+    
+    .nav-tabs .nav-link {
+      color: #f0f0f0;
+      border: none;
+      border-radius: 0;
+      padding: 15px;
+    }
+    
+    .nav-tabs .nav-link.active {
+      background-color: var(--primary);
+      color: #1f1f1f;
+      font-weight: bold;
+    }
+    
+    .form-control, .form-select {
+      background-color: var(--input-bg);
+      border: none;
+      color: #f0f0f0;
+      border-radius: 10px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      background-color: var(--input-bg);
+      color: #f0f0f0;
+      box-shadow: 0 0 0 0.25rem rgba(245, 166, 35, 0.25);
+    }
+    
+    .modal-content {
+      background-color: var(--card-bg);
+      color: #f0f0f0;
+      border-radius: 15px;
+    }
+    
+    .modal-header {
+      border-bottom-color: var(--border-color);
+    }
+    
+    .modal-footer {
+      border-top-color: var(--border-color);
+    }
+    
+    .section-title {
+      color: var(--primary);
+    }
+    
+    .stat-item {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .tag {
+      background-color: var(--input-bg);
+      color: #f0f0f0;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      display: inline-block;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    
+    .client-avatar {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .portfolio-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px 10px 0 0;
+    }
+    
+    .welcome-message {
+      background-color: var(--card-bg);
+      border-radius: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header p-3 mb-4">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-3 mb-md-0">
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-primary" onclick="changeTab('clients')">
+              <i class="bi bi-people me-2"></i>Clientes
+            </button>
+            <button class="btn btn-primary" onclick="changeTab('portfolio')">
+              <i class="bi bi-images me-2"></i>Mi Portafolio
+            </button>
+            <button class="btn btn-primary" onclick="changeTab('appointments')">
+              <i class="bi bi-calendar-check me-2"></i>Citas
+            </button>
+            <button class="btn btn-primary" onclick="changeTab('analytics')">
+              <i class="bi bi-bar-chart me-2"></i>Estadísticas
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+            <button class="btn btn-light" onclick="openModal('profileModal')">
+              <i class="bi bi-person me-2"></i>Mi Perfil
+            </button>
+            <button class="btn btn-success" onclick="openModal('addWorkModal')">
+              <i class="bi bi-plus-circle me-2"></i>Añadir Trabajo
+            </button>
+            <button class="btn btn-pdf" onclick="generateAppointmentsPDF()">
+              <i class="bi bi-file-earmark-pdf me-2"></i>PDF Citas
+            </button>
+            <button class="btn btn-danger" onclick="logout()">
+              <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Welcome Message -->
+  <div class="container-fluid">
+    <div class="welcome-message" id="welcomeMessage"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container-fluid">
+    <div class="row g-4">
+      <!-- Sidebar -->
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title section-title">Estadísticas</h5>
+            <div class="stat-item d-flex justify-content-between">
+              <span>Clientes totales</span>
+              <span>42</span>
+            </div>
+            <div class="stat-item d-flex justify-content-between">
+              <span>Citas este mes</span>
+              <span>15</span>
+            </div>
+            <div class="stat-item d-flex justify-content-between">
+              <span>Valoración media</span>
+              <span id="ratingAvg">0</span>
+            </div>
+            <div class="stat-item d-flex justify-content-between">
+              <span>Ingresos (mes)</span>
+              <span>$1,250</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+          <li class="nav-item flex-fill text-center" role="presentation">
+            <button class="nav-link active w-100" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients-content" type="button" role="tab">Clientes</button>
+          </li>
+          <li class="nav-item flex-fill text-center" role="presentation">
+            <button class="nav-link w-100" id="portfolio-tab" data-bs-toggle="tab" data-bs-target="#portfolio-content" type="button" role="tab">Mi Portafolio</button>
+          </li>
+          <li class="nav-item flex-fill text-center" role="presentation">
+            <button class="nav-link w-100" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments-content" type="button" role="tab">Citas</button>
+          </li>
+          <li class="nav-item flex-fill text-center" role="presentation">
+            <button class="nav-link w-100" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics-content" type="button" role="tab">Estadísticas</button>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Clients Tab -->
+          <div class="tab-pane fade show active" id="clients-content" role="tabpanel">
+            <h4 class="section-title mb-4">Mis Clientes</h4>
+            <div class="row g-4" id="clientsGrid">
+              <!-- Clientes se cargarán dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Portfolio Tab -->
+          <div class="tab-pane fade" id="portfolio-content" role="tabpanel">
+            <h4 class="section-title mb-4">Mi Portafolio</h4>
+            <div class="row g-4" id="portfolioGrid">
+              <!-- Trabajos se cargarán dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Appointments Tab -->
+          <div class="tab-pane fade" id="appointments-content" role="tabpanel">
+            <h4 class="section-title mb-4">Próximas Citas</h4>
+            <div class="row g-4" id="appointmentsList">
+              <!-- Citas se cargarán dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Analytics Tab -->
+          <div class="tab-pane fade" id="analytics-content" role="tabpanel">
+            <h4 class="section-title mb-4">Estadísticas y Análisis</h4>
+            <div class="row g-4" id="analyticsContent">
+              <!-- Estadísticas se cargarán dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para añadir trabajo -->
+  <div class="modal fade" id="addWorkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title section-title">Añadir Nuevo Trabajo</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="addWorkForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="workTitle" class="form-label">Título</label>
+              <input type="text" class="form-control" id="workTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="workDescription" class="form-label">Descripción</label>
+              <textarea class="form-control" id="workDescription" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="workClient" class="form-label">Cliente</label>
+              <select class="form-select" id="workClient" required>
+                <option value="">Seleccionar cliente</option>
+                <!-- Opciones se cargarán dinámicamente -->
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="workImage" class="form-label">Imagen (URL)</label>
+              <input type="text" class="form-control" id="workImage" placeholder="https://ejemplo.com/imagen.jpg">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar Trabajo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar perfil -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title section-title">Mi Perfil Profesional</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="profileForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="profileName" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="profileName" required>
+            </div>
+            <div class="mb-3">
+              <label for="profileSpecialty" class="form-label">Especialidad</label>
+              <select class="form-select" id="profileSpecialty" required>
+                <option value="tatuador">Tatuador</option>
+                <option value="barbero">Barbero</option>
+                <option value="estilista">Estilista</option>
+                <option value="perforador">Perforador</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="profileBio" class="form-label">Biografía</label>
+              <textarea class="form-control" id="profileBio" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="profileLocation" class="form-label">Ubicación</label>
+              <input type="text" class="form-control" id="profileLocation" required>
+            </div>
+            <div class="mb-3">
+              <label for="profilePhone" class="form-label">Teléfono</label>
+              <input type="text" class="form-control" id="profilePhone">
+            </div>
+            <div class="mb-3">
+              <label for="profileEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="profileEmail" readonly>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Importamos las bibliotecas jsPDF
+    const { jsPDF } = window.jspdf;
+
+    // Variables globales
+    let currentUser = null;
+    let authToken = null;
+    const API_BASE_URL = 'http://localhost:5000/api';
+
+    // Datos de ejemplo
+    const clientes = [
+      {
+        id: 1,
+        nombre: 'Carlos Rodríguez',
+        imagen: 'https://via.placeholder.com/150',
+        ultimaVisita: '15/04/2025',
+        intereses: ['Tatuajes Tribales', 'Blackwork'],
+        gastado: '$350'
+      },
+      {
+        id: 2,
+        nombre: 'María López',
+        imagen: 'https://via.placeholder.com/150',
+        ultimaVisita: '20/03/2025',
+        intereses: ['Tatuajes Minimalistas', 'Color'],
+        gastado: '$280'
+      },
+      {
+        id: 3,
+        nombre: 'Javier Martínez',
+        imagen: 'https://via.placeholder.com/150',
+        ultimaVisita: '05/04/2025',
+        intereses: ['Tatuajes Grandes', 'Japonés'],
+        gastado: '$520'
+      },
+      {
+        id: 4,
+        nombre: 'Ana Sánchez',
+        imagen: 'https://via.placeholder.com/150',
+        ultimaVisita: '10/04/2025',
+        intereses: ['Tatuajes Pequeños', 'Lettering'],
+        gastado: '$150'
+      },
+      {
+        id: 5,
+        nombre: 'Roberto Fernández',
+        imagen: 'https://via.placeholder.com/150',
+        ultimaVisita: '01/04/2025',
+        intereses: ['Tatuajes Realistas', 'Retratos'],
+        gastado: '$450'
+      },
+      {
+        id: 6,
+        nombre: 'Laura Gómez',
+        imagen: 'https://via.placeholder.com/150',
+        ultimaVisita: '25/03/2025',
+        intereses: ['Tatuajes Geométricos', 'Dotwork'],
+        gastado: '$320'
+      }
+    ];
+
+    const trabajos = [
+      {
+        id: 1,
+        titulo: 'Tatuaje Tribal Brazo',
+        descripcion: 'Diseño tribal personalizado para brazo completo',
+        imagen: 'https://via.placeholder.com/250x200',
+        cliente: 'Carlos Rodríguez',
+        fecha: '15/04/2025',
+        likes: 45,
+        comentarios: 8
+      },
+      {
+        id: 2,
+        titulo: 'Tatuaje Minimalista',
+        descripcion: 'Diseño minimalista de montañas en antebrazo',
+        imagen: 'https://via.placeholder.com/250x200',
+        cliente: 'María López',
+        fecha: '20/03/2025',
+        likes: 32,
+        comentarios: 5
+      },
+      {
+        id: 3,
+        titulo: 'Manga Japonesa',
+        descripcion: 'Manga completa estilo japonés tradicional',
+        imagen: 'https://via.placeholder.com/250x200',
+        cliente: 'Javier Martínez',
+        fecha: '05/04/2025',
+        likes: 67,
+        comentarios: 12
+      },
+      {
+        id: 4,
+        titulo: 'Lettering Personalizado',
+        descripcion: 'Frase personalizada en caligrafía moderna',
+        imagen: 'https://via.placeholder.com/250x200',
+        cliente: 'Ana Sánchez',
+        fecha: '10/04/2025',
+        likes: 28,
+        comentarios: 4
+      }
+    ];
+
+    const citas = [
+      {
+        id: 1,
+        cliente: 'Carlos Rodríguez',
+        fecha: '27/04/2025',
+        hora: '14:00',
+        servicio: 'Continuación manga tribal',
+        duracion: '3 horas',
+        estado: 'confirmada',
+        precio: 150
+      },
+      {
+        id: 2,
+        cliente: 'María López',
+        fecha: '03/05/2025',
+        hora: '10:00',
+        servicio: 'Nuevo tatuaje minimalista',
+        duracion: '2 horas',
+        estado: 'pendiente',
+        precio: 100
+      },
+      {
+        id: 3,
+        cliente: 'Roberto Fernández',
+        fecha: '09/05/2025',
+        hora: '16:00',
+        servicio: 'Retrato realista',
+        duracion: '4 horas',
+        estado: 'confirmada',
+        precio: 200
+      },
+      {
+        id: 4,
+        cliente: 'Ana Sánchez',
+        fecha: '12/05/2025',
+        hora: '11:30',
+        servicio: 'Lettering personalizado',
+        duracion: '1.5 horas',
+        estado: 'confirmada',
+        precio: 75
+      },
+      {
+        id: 5,
+        cliente: 'Javier Martínez',
+        fecha: '17/05/2025',
+        hora: '15:00',
+        servicio: 'Continuación manga japonesa',
+        duracion: '3 horas',
+        estado: 'pendiente',
+        precio: 150
+      }
+    ];
+
+    // Verificar autenticación al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Obtener datos de autenticación del localStorage
+      const authDataStr = localStorage.getItem('auth');
+      
+      if (!authDataStr) {
+        // Si no hay datos de autenticación, redirigir al login
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      try {
+        const authData = JSON.parse(authDataStr);
+        
+        if (!authData.isAuthenticated || !authData.token) {
+          // Si no está autenticado o no tiene token, redirigir al login
+          window.location.href = 'index.html';
+          return;
+        }
+        
+        // Guardar datos del usuario y token
+        currentUser = authData.user;
+        authToken = authData.token;
+        
+        // Verificar que el usuario es profesional
+        if (currentUser.tipo !== 'profesional') {
+          alert('Esta sección es solo para profesionales');
+          window.location.href = 'index.html';
+          return;
+        }
+        
+        // Mostrar mensaje de bienvenida
+        document.getElementById('welcomeMessage').innerHTML = `
+          <h4>Bienvenido, ${currentUser.nombre_completo}</h4>
+          <p>Especialidad: ${currentUser.especialidad || 'No especificada'}</p>
+        `;
+        
+        // Actualizar calificación promedio
+        document.getElementById('ratingAvg').textContent = 
+          currentUser.calificacion_promedio ? `${currentUser.calificacion_promedio.toFixed(1)} ★` : 'Sin calificaciones';
+        
+        // Cargar datos iniciales
+        renderClientes();
+        renderTrabajos();
+        renderCitas();
+        renderAnalytics();
+        cargarClientesSelect();
+        cargarDatosPerfil();
+      } catch (error) {
+        console.error('Error al procesar datos de autenticación:', error);
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Función para cerrar sesión
+    function logout() {
+      localStorage.removeItem('auth');
+      window.location.href = 'index.html';
+    }
+
+    // Función para cambiar entre pestañas
+    function changeTab(tabId) {
+      const triggerEl = document.querySelector(`#${tabId}-tab`);
+      bootstrap.Tab.getOrCreateInstance(triggerEl).show();
+    }
+
+    // Función para renderizar clientes
+    function renderClientes() {
+      const clientesGrid = document.getElementById('clientsGrid');
+      clientesGrid.innerHTML = '';
+      
+      clientes.forEach(cliente => {
+        let interesesHTML = '';
+        cliente.intereses.forEach(interes => {
+          interesesHTML += `<span class="tag">${interes}</span>`;
+        });
+        
+        const clienteCard = document.createElement('div');
+        clienteCard.className = 'col-md-6 col-lg-4';
+        clienteCard.innerHTML = `
+          <div class="card h-100">
+            <div class="card-body">
+              <img src="${cliente.imagen}" alt="${cliente.nombre}" class="client-avatar">
+              <h5 class="card-title">${cliente.nombre}</h5>
+              <p class="card-text text-muted">Última visita: ${cliente.ultimaVisita}</p>
+              <p class="card-text text-muted">Total gastado: ${cliente.gastado}</p>
+              <div class="mb-3">
+                ${interesesHTML}
+              </div>
+              <div class="d-flex justify-content-between">
+                <button class="btn btn-sm btn-primary" onclick="verHistorialCliente(${cliente.id})">Historial</button>
+                <button class="btn btn-sm btn-success" onclick="enviarMensaje(${cliente.id})">Mensaje</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        clientesGrid.appendChild(clienteCard);
+      });
+    }
+
+    // Función para renderizar trabajos
+    function renderTrabajos() {
+      const portfolioGrid = document.getElementById('portfolioGrid');
+      portfolioGrid.innerHTML = '';
+      
+      trabajos.forEach(trabajo => {
+        const trabajoItem = document.createElement('div');
+        trabajoItem.className = 'col-md-6 col-lg-4';
+        
+        trabajoItem.innerHTML = `
+          <div class="card h-100">
+            <img src="${trabajo.imagen}" alt="${trabajo.titulo}" class="portfolio-img">
+            <div class="card-body">
+              <h5 class="card-title section-title">${trabajo.titulo}</h5>
+              <p class="card-text">${trabajo.descripcion}</p>
+              <p class="card-text text-muted">Cliente: ${trabajo.cliente}</p>
+              <p class="card-text text-muted">Fecha: ${trabajo.fecha}</p>
+              <div class="d-flex justify-content-between text-muted">
+                <span><i class="bi bi-heart-fill me-1"></i> ${trabajo.likes}</span>
+                <span><i class="bi bi-chat-fill me-1"></i> ${trabajo.comentarios}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        portfolioGrid.appendChild(trabajoItem);
+      });
+    }
+
+    // Función para renderizar citas
+    function renderCitas() {
+      const appointmentsList = document.getElementById('appointmentsList');
+      appointmentsList.innerHTML = '';
+      
+      citas.forEach(cita => {
+        const citaItem = document.createElement('div');
+        citaItem.className = 'col-md-6';
+        
+        let badgeClass = cita.estado === 'confirmada' ? 'bg-success' : 'bg-warning text-dark';
+        
+        citaItem.innerHTML = `
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">${cita.cliente}</h5>
+              <p class="card-text"><i class="bi bi-calendar me-2"></i>${cita.fecha} a las ${cita.hora}</p>
+              <p class="card-text"><i class="bi bi-brush me-2"></i>${cita.servicio}</p>
+              <p class="card-text"><i class="bi bi-clock me-2"></i>${cita.duracion}</p>
+              <p class="card-text"><i class="bi bi-currency-dollar me-2"></i>${cita.precio}</p>
+              <div class="mb-3">
+                <span class="badge ${badgeClass}">${cita.estado.toUpperCase()}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <button class="btn btn-sm btn-primary" onclick="confirmarCita(${cita.id})">Confirmar</button>
+                <button class="btn btn-sm btn-success" onclick="enviarRecordatorio(${cita.id})">Recordatorio</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        appointmentsList.appendChild(citaItem);
+      });
+    }
+
+    // Función para renderizar estadísticas
+    function renderAnalytics() {
+      const analyticsContent = document.getElementById('analyticsContent');
+      
+      analyticsContent.innerHTML = `
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Resumen de Actividad</h5>
+              <p class="card-text"><i class="bi bi-people me-2"></i>Clientes nuevos este mes: 8</p>
+              <p class="card-text"><i class="bi bi-check2-circle me-2"></i>Trabajos completados: 15</p>
+              <p class="card-text"><i class="bi bi-currency-dollar me-2"></i>Ingresos totales: $1,250</p>
+              <p class="card-text"><i class="bi bi-star-fill me-2"></i>Valoración media: ${currentUser.calificacion_promedio ? currentUser.calificacion_promedio.toFixed(1) : '0'}/5</p>
+              <p class="card-text"><i class="bi bi-calendar-check me-2"></i>Citas programadas: 5</p>
+              <p class="card-text"><i class="bi bi-graph-up me-2"></i>Tasa de conversión: 75%</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Servicios Más Populares</h5>
+              <div class="mb-3">
+                <p class="mb-1">1. Tatuajes Tribales</p>
+                <div class="progress" style="height: 20px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 35%;" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">35%</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1">2. Tatuajes Minimalistas</p>
+                <div class="progress" style="height: 20px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1">3. Tatuajes Realistas</p>
+                <div class="progress" style="height: 20px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">20%</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1">4. Lettering</p>
+                <div class="progress" style="height: 20px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">15%</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1">5. Otros</p>
+                <div class="progress" style="height: 20px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 5%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100">5%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Funciones para modales
+    function openModal(modalId) {
+      const modal = new bootstrap.Modal(document.getElementById(modalId));
+      modal.show();
+    }
+
+    // Cargar opciones de clientes en el select
+    function cargarClientesSelect() {
+      const select = document.getElementById('workClient');
+      
+      clientes.forEach(cliente => {
+        const option = document.createElement('option');
+        option.value = cliente.id;
+        option.textContent = cliente.nombre;
+        select.appendChild(option);
+      });
+    }
+
+    // Cargar datos del perfil
+    function cargarDatosPerfil() {
+      if (!currentUser) return;
+      
+      document.getElementById('profileName').value = currentUser.nombre_completo || '';
+      document.getElementById('profileSpecialty').value = currentUser.especialidad || 'tatuador';
+      document.getElementById('profileBio').value = currentUser.descripcion || '';
+      document.getElementById('profileLocation').value = currentUser.ciudad || '';
+      document.getElementById('profilePhone').value = currentUser.telefono || '';
+      document.getElementById('profileEmail').value = currentUser.email || '';
+    }
+
+    // Funciones para interactuar con clientes
+    function verHistorialCliente(clienteId) {
+      alert(`Ver historial del cliente ID: ${clienteId}`);
+      // Aquí iría la lógica para mostrar el historial
+    }
+
+    function enviarMensaje(clienteId) {
+      alert(`Enviar mensaje al cliente ID: ${clienteId}`);
+      // Aquí iría la lógica para enviar mensaje
+    }
+
+    // Funciones para interactuar con citas
+    function confirmarCita(citaId) {
+      alert(`Confirmar cita ID: ${citaId}`);
+      // Aquí iría la lógica para confirmar cita
+    }
+
+    function enviarRecordatorio(citaId) {
+      alert(`Enviar recordatorio para cita ID: ${citaId}`);
+      // Aquí iría la lógica para enviar recordatorio
+    }
+
+    // Manejar envío de formularios
+    document.getElementById('addWorkForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const titulo = document.getElementById('workTitle').value;
+      const descripcion = document.getElementById('workDescription').value;
+      const clienteId = document.getElementById('workClient').value;
+      const imagen = document.getElementById('workImage').value;
+      
+      // Aquí se haría la petición a la API para guardar el trabajo
+      // Por ahora solo mostramos un mensaje
+      alert(`Trabajo "${titulo}" añadido correctamente`);
+      
+      // Cerrar modal
+      bootstrap.Modal.getInstance(document.getElementById('addWorkModal')).hide();
+      
+      // Simular añadir el trabajo a la lista
+      const nuevoTrabajo = {
+        id: trabajos.length + 1,
+        titulo: titulo,
+        descripcion: descripcion,
+        imagen: imagen || 'https://via.placeholder.com/250x200',
+        cliente: clientes.find(c => c.id == clienteId)?.nombre || 'Cliente',
+        fecha: new Date().toLocaleDateString('es-ES'),
+        likes: 0,
+        comentarios: 0
+      };
+      
+      trabajos.push(nuevoTrabajo);
+      renderTrabajos();
+      
+      // Limpiar formulario
+      document.getElementById('addWorkForm').reset();
+    });
+
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      if (!currentUser || !authToken) {
+        alert('Debes iniciar sesión para actualizar tu perfil');
+        return;
+      }
+      
+      const nombre = document.getElementById('profileName').value;
+      const especialidad = document.getElementById('profileSpecialty').value;
+      const bio = document.getElementById('profileBio').value;
+      const ubicacion = document.getElementById('profileLocation').value;
+      const telefono = document.getElementById('profilePhone').value;
+      
+      // Crear objeto con datos actualizados
+      const datosActualizados = {
+        nombre_completo: nombre,
+        especialidad: especialidad,
+        descripcion: bio,
+        ciudad: ubicacion,
+        telefono: telefono
+      };
+      
+      try {
+        // Aquí se haría la petición a la API para actualizar el perfil
+        // Por ahora solo actualizamos los datos locales
+        
+        // Actualizar datos del usuario
+        currentUser = {
+          ...currentUser,
+          ...datosActualizados
+        };
+        
+        // Actualizar datos en localStorage
+        const authData = JSON.parse(localStorage.getItem('auth'));
+        authData.user = currentUser;
+        localStorage.setItem('auth', JSON.stringify(authData));
+        
+        // Actualizar mensaje de bienvenida
+        document.getElementById('welcomeMessage').innerHTML = `
+          <h4>Bienvenido, ${currentUser.nombre_completo}</h4>
+          <p>Especialidad: ${currentUser.especialidad || 'No especificada'}</p>
+        `;
+        
+        alert('Perfil actualizado correctamente');
+        
+        // Cerrar modal
+        bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+      } catch (error) {
+        console.error('Error al actualizar perfil:', error);
+        alert('Error al actualizar perfil');
+      }
+    });
+
+    // Función para generar el PDF de citas
+    function generateAppointmentsPDF() {
+      // Crear un nuevo documento PDF
+      const doc = new jsPDF();
+      
+      // Configurar el título del documento
+      doc.setFontSize(18);
+      doc.text('Reporte de Mis Citas', 14, 20);
+      
+      // Añadir información del profesional
+      doc.setFontSize(12);
+      doc.text(`Profesional: ${currentUser.nombre_completo}`, 14, 30);
+      doc.text(`Especialidad: ${currentUser.especialidad || 'No especificada'}`, 14, 38);
+      
+      // Añadir fecha de generación
+      doc.setFontSize(10);
+      doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-ES')}`, 14, 46);
+      
+      // Preparar los datos para la tabla
+      const tableData = citas.map(cita => [
+        cita.id,
+        cita.cliente,
+        cita.fecha,
+        cita.hora,
+        cita.servicio,
+        cita.duracion,
+        cita.estado.toUpperCase(),
+        `$${cita.precio}`
+      ]);
+      
+      // Configurar las columnas de la tabla
+      const tableColumns = [
+        'ID', 
+        'Cliente', 
+        'Fecha', 
+        'Hora', 
+        'Servicio', 
+        'Duración', 
+        'Estado', 
+        'Precio'
+      ];
+      
+      // Generar la tabla en el PDF
+      doc.autoTable({
+        head: [tableColumns],
+        body: tableData,
+        startY: 55,
+        theme: 'grid',
+        styles: {
+          fontSize: 8,
+          cellPadding: 3,
+          lineColor: [200, 200, 200]
+        },
+        headStyles: {
+          fillColor: [245, 166, 35],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        }
+      });
+      
+      // Añadir resumen al final del documento
+      const finalY = doc.lastAutoTable.finalY || 55;
+      
+      // Calcular estadísticas
+      const totalCitas = citas.length;
+      const citasConfirmadas = citas.filter(c => c.estado === 'confirmada').length;
+      const citasPendientes = citas.filter(c => c.estado === 'pendiente').length;
+      const totalIngresos = citas.reduce((sum, cita) => sum + cita.precio, 0);
+      
+      // Añadir resumen
+      doc.setFontSize(12);
+      doc.text('Resumen:', 14, finalY + 20);
+      
+      doc.setFontSize(10);
+      doc.text(`Total de citas: ${totalCitas}`, 14, finalY + 30);
+      doc.text(`Citas confirmadas: ${citasConfirmadas}`, 14, finalY + 38);
+      doc.text(`Citas pendientes: ${citasPendientes}`, 14, finalY + 46);
+      doc.text(`Total de ingresos: $${totalIngresos}`, 14, finalY + 54);
+      
+      // Guardar el PDF
+      doc.save(`citas_${currentUser.username || 'profesional'}.pdf`);
+      
+      alert('Reporte de citas generado correctamente');
+    }
+  </script>
+</body>
+</html>

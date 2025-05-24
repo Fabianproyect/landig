@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Corte de Pelo Profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #1f1f1f;
+            color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: #2c2c2c;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            color: #f5a623;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            background-color: #2e2e2e;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .camera-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #camera, #output {
+            width: 100%;
+            display: block;
+            background-color: #1a1a1a;
+        }
+
+        .face-guide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            border: 2px dashed rgba(245, 166, 35, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .instructions {
+            color: #ccc;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .instructions i {
+            color: #f5a623;
+            margin-right: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .primary-btn, .secondary-btn {
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-btn {
+            background-color: #f5a623;
+            color: #1f1f1f;
+        }
+
+        .primary-btn:hover {
+            background-color: #e59400;
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+            background-color: transparent;
+            color: #f5a623;
+            border: 1px solid #f5a623;
+        }
+
+        .secondary-btn:hover {
+            background-color: rgba(245, 166, 35, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .info-section {
+            background-color: #3a3a3a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #f5a623;
+        }
+
+        .tips-list {
+            list-style: none;
+        }
+
+        .tips-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tips-list i {
+            color: #f5a623;
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 5px solid rgba(245, 166, 35, 0.3);
+            border-top: 5px solid #f5a623;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-button {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-button a {
+            color: #f5a623;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-button a:hover {
+            color: #e59400;
+        }
+
+        /* Estilos para los resultados */
+        .message-container {
+            background-color: #3a3a3a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .message-container h3 {
+            color: #f5a623;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f5a623;
+            padding-bottom: 10px;
+        }
+
+        .result-summary {
+            background-color: #2e2e2e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .result-summary p {
+            margin: 8px 0;
+        }
+
+        .recommendations {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .recommendations li:before {
+            content: "•";
+            color: #f5a623;
+            position: absolute;
+            left: 0;
+        }
+
+        .areas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .area-card {
+            background-color: #2e2e2e;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid #f5a623;
+        }
+
+        .final-tip {
+            font-style: italic;
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .primary-btn, .secondary-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .areas-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Analizador de Corte de Pelo</h1>
+            <p class="subtitle">Descubre el estilo perfecto para tu rostro</p>
+        </div>
+        <button class="secondary-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i> Volver
+        </button>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="camera-section">
+                <div class="camera-container">
+    <div class="video-wrapper">
+        <video id="camera" autoplay playsinline></video>
+        <canvas id="output"></canvas>
+    </div>
+    <div class="face-guide">
+        <div class="face-outline"></div>
+    </div>
+</div>
+
+  
+                <p class="instructions">
+                    <i class="fas fa-info-circle"></i>
+                    Posiciona tu rostro en el centro del recuadro y asegúrate de tener buena iluminación
+                </p>
+                
+                <div class="controls">
+                    <button id="captureBtn" class="primary-btn">
+                        <i class="fas fa-camera"></i> Capturar Imagen
+                    </button>
+                    <button id="resetBtn" class="secondary-btn" style="display: none;">
+                        <i class="fas fa-redo"></i> Nuevo Análisis
+                    </button>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="tips-section">
+                    <div class="tips-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Consejos para un mejor análisis</h3>
+                    </div>
+                    <ul class="tips-list">
+                        <li><i class="fas fa-check"></i> Asegúrate de tener buena iluminación frontal</li>
+                        <li><i class="fas fa-check"></i> Mantén el cabello seco y despejado</li>
+                        <li><i class="fas fa-check"></i> Evita sombras fuertes en tu rostro</li>
+                        <li><i class="fas fa-check"></i> Muestra claramente la línea del cabello</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Analizando tu corte de pelo...</p>
+        </div>
+        
+        <div id="message" class="message-container">
+            <!-- Los resultados se mostrarán aquí -->
+        </div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const video = document.getElementById('camera');
+        const outputCanvas = document.getElementById('output');
+        const captureBtn = document.getElementById('captureBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const messageEl = document.getElementById('message');
+        const loadingEl = document.getElementById('loading');
+
+        // Variables de estado
+        let currentStream = null;
+
+        // Inicializar la aplicación
+        async function initApp() {
+            showMessage('Inicializando cámara...', 'info');
+            await initLocalCamera();
+            setupCameraUI();
+        }
+
+        // Inicializar cámara local con reintentos
+        async function initLocalCamera() {
+            let attempts = 0;
+            const maxAttempts = 3;
+            
+            while (attempts < maxAttempts) {
+                attempts++;
+                const success = await tryInitLocalCamera();
+                if (success) return true;
+                
+                if (attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    showMessage(`Reintentando conectar cámara (${attempts}/${maxAttempts})...`, 'warning');
+                }
+            }
+            
+            showMessage('No se pudo acceder a la cámara. Verifica los permisos.', 'error');
+            return false;
+        }
+
+        // Intentar inicializar cámara local
+        async function tryInitLocalCamera() {
+            stopCurrentStream();
+            
+            const constraints = {
+                audio: false,
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'user'
+                }
+            };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                currentStream = stream;
+                video.srcObject = stream;
+                
+                return new Promise((resolve) => {
+                    const onLoaded = () => {
+                        video.removeEventListener('loadedmetadata', onLoaded);
+                        setupCanvas();
+                        showMessage('Cámara conectada correctamente', 'success');
+                        resolve(true);
+                    };
+                    
+                    video.addEventListener('loadedmetadata', onLoaded, { once: true });
+                    
+                    // Timeout por si nunca carga
+                    setTimeout(() => {
+                        video.removeEventListener('loadedmetadata', onLoaded);
+                        resolve(false);
+                    }, 3000);
+                });
+            } catch (err) {
+                console.error('Error al acceder a cámara:', err);
+                return false;
+            }
+        }
+
+        // Configurar canvas
+        function setupCanvas() {
+            outputCanvas.width = video.videoWidth;
+            outputCanvas.height = video.videoHeight;
+        }
+
+        // Configurar UI según estado de cámara
+        function setupCameraUI() {
+            if (!currentStream) {
+                captureBtn.disabled = true;
+                showMessage('No se pudo acceder a la cámara. Recarga la página para intentar nuevamente.', 'error');
+            } else {
+                captureBtn.disabled = false;
+            }
+        }
+
+        // Detener stream actual
+        function stopCurrentStream() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+                currentStream = null;
+            }
+            video.srcObject = null;
+        }
+
+        // Capturar imagen
+        function captureImage() {
+            try {
+                const context = outputCanvas.getContext('2d');
+                context.drawImage(video, 0, 0, outputCanvas.width, outputCanvas.height);
+                
+                outputCanvas.style.display = 'block';
+                video.style.display = 'none';
+                captureBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+                loadingEl.style.display = 'flex';
+                messageEl.style.display = 'none';
+                
+                analyzeHaircut(outputCanvas.toDataURL('image/jpeg', 0.8));
+            } catch (error) {
+                console.error('Error al capturar imagen:', error);
+                showMessage('Error al capturar. Intenta nuevamente.', 'error');
+                resetCamera();
+            }
+        }
+
+        // Reiniciar cámara
+        function resetCamera() {
+            outputCanvas.style.display = 'none';
+            video.style.display = 'block';
+            captureBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'none';
+            loadingEl.style.display = 'none';
+            messageEl.style.display = 'none';
+        }
+
+        // Analizar imagen (simulación)
+        function analyzeHaircut(imageData) {
+            simulateAnalysis(imageData);
+        }
+
+        // Simular análisis
+        function simulateAnalysis(imageData) {
+            setTimeout(() => {
+                loadingEl.style.display = 'none';
+                showResults({
+                    success: true,
+                    haircutType: detectHaircutType(),
+                    score: getRandomScore(),
+                    symmetry: getRandomSymmetry(),
+                    recommendations: getRandomRecommendations(),
+                    areasToImprove: getRandomAreasToImprove()
+                });
+            }, 1500);
+        }
+
+        // Funciones de ayuda para generar datos simulados
+        function detectHaircutType() {
+            const types = [
+                "Corte clásico",
+                "Corte degradado",
+                "Corte bajo",
+                "Corte medio",
+                "Corte texturizado",
+                "Corte con diseño"
+            ];
+            return types[Math.floor(Math.random() * types.length)];
+        }
+
+        function getRandomScore() {
+            return (Math.random() * 3 + 7).toFixed(1); // Entre 7.0 y 10.0
+        }
+
+        function getRandomSymmetry() {
+            const options = ["Excelente", "Buena", "Regular", "Puede mejorar"];
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        function getRandomRecommendations() {
+            const recommendations = [
+                "Podrías mejorar el equilibrio en los lados",
+                "Considera un degradado más suave",
+                "El volumen en la parte superior está bien logrado",
+                "Las patillas podrían ser más simétricas",
+                "El flequillo podría estar más definido"
+            ];
+            // Devuelve 1-3 recomendaciones aleatorias
+            return recommendations
+                .sort(() => 0.5 - Math.random())
+                .slice(0, Math.floor(Math.random() * 3) + 1);
+        }
+
+        function getRandomAreasToImprove() {
+            const areas = [
+                { area: "Lados", suggestion: "Igualar longitud" },
+                { area: "Parte posterior", suggestion: "Suavizar Degradado" },
+                { area: "Patillas", suggestion: "Afinar diseño" },
+                { area: "Flequillo", suggestion: "Definir mejor la línea" },
+                { area: "Corona", suggestion: "Añadir más volumen" }
+            ];
+            // Devuelve 1-2 áreas aleatorias
+            return areas
+                .sort(() => 0.5 - Math.random())
+                .slice(0, Math.floor(Math.random() * 2) + 1);
+        }
+
+        // Mostrar resultados
+        function showResults(data) {
+            if (!data?.success) {
+                showMessage('Error en el análisis. Intenta nuevamente.', 'error');
+                return;
+            }
+
+            messageEl.style.display = 'block';
+            messageEl.innerHTML = `
+                <h3>Resultados del Análisis</h3>
+                <div class="result-summary">
+                    <p><strong>Tipo de corte:</strong> ${data.haircutType || 'No identificado'}</p>
+                    <p><strong>Puntuación:</strong> ${data.score || 'N/A'}/10</p>
+                    <p><strong>Simetría:</strong> ${data.symmetry || 'No evaluada'}</p>
+                </div>
+                
+                ${data.recommendations?.length ? `
+                <h4>Recomendaciones:</h4>
+                <ul class="recommendations">${data.recommendations.map(r => `<li>${r}</li>`).join('')}</ul>
+                ` : ''}
+                
+                ${data.areasToImprove?.length ? `
+                <h4>Áreas para mejorar:</h4>
+                <div class="areas-container">
+                    ${data.areasToImprove.map(a => `
+                    <div class="area-card">
+                        <strong>${a.area}:</strong> ${a.suggestion}
+                    </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                <p class="final-tip">Para mantener tu corte, visita a tu barbero cada 3-4 semanas.</p>
+            `;
+        }
+
+        // Mostrar mensaje
+        function showMessage(text, type = 'info') {
+            messageEl.style.display = 'block';
+            messageEl.innerHTML = `<div class="message ${type}">${text}</div>`;
+        }
+
+        // Event listeners
+        captureBtn.addEventListener('click', captureImage);
+        resetBtn.addEventListener('click', resetCamera);
+
+        // Inicializar al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+    </script>
+</body>
+</html>

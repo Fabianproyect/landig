@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
+  <!-- Bootstrap CSS + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <!-- jsPDF para exportar a PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      background: url('https://mueblebellezajb.com/blog/wp-content/uploads/2022/04/barber-1453064_1920-min.jpg') fixed center/cover;
+      font-family: 'Inter', sans-serif;
+      color: #f0f0f0;
+    }
+    .bg-custom-dark { background-color: #2c2c2c; }
+    .bg-custom-darker { background-color: #2e2e2e; }
+    .bg-custom-darkest { background-color: #3a3a3a; }
+    .bg-custom-orange { background-color: #f5a623; }
+    .bg-custom-red { background-color: #ff4d4d; }
+    .bg-custom-green { background-color: #4CAF50; }
+    .text-custom-orange { color: #f5a623; }
+    .text-custom-gray { color: #b0b0b0; }
+    .user-avatar { 
+      width: 32px; 
+      height: 32px; 
+      border-radius: 50%; 
+      background-color: #3a3a3a;
+      object-fit: cover;
+    }
+    .badge-orange { background-color: #f5a623; color: #1f1f1f; }
+    .badge-red { background-color: #ff4d4d; color: white; }
+    .badge-green { background-color: #4CAF50; color: white; }
+    .badge-blue { background-color: #007bff; color: white; }
+    .stats-card, .post-card, .distribution-item, .portfolio-card { 
+      background-color: rgba(46, 46, 46, 0.8); 
+      border-radius: 15px; 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+    .stats-card:hover, .post-card:hover, .distribution-item:hover, .portfolio-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    .post-image, .portfolio-image { 
+      height: 200px; 
+      background-color: #3a3a3a; 
+      border-radius: 10px; 
+      overflow: hidden;
+    }
+    .post-image img, .portfolio-image img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+    }
+    .action-button { 
+      width: 32px; 
+      height: 32px; 
+      border-radius: 50%; 
+      background-color: #3a3a3a; 
+      color: #f0f0f0;
+      border: none;
+      margin: 0 2px;
+    }
+    .action-button.delete { color: #ff4d4d; }
+    .action-button:hover { background-color: #4a4a4a; }
+    .report-button { padding: 5px 10px; border-radius: 10px; font-size: 12px; border: none; margin: 0 2px; }
+    .report-button.view { background-color: #3a3a3a; color: #f0f0f0; }
+    .report-button.approve { background-color: #4CAF50; color: white; }
+    .report-button.reject { background-color: #ff4d4d; color: white; }
+    .modal-content { background-color: rgba(46, 46, 46, 0.9); border-radius: 15px; }
+    .loading { opacity: 0.6; }
+    .error-message { 
+      background-color: #ff4d4d; 
+      color: white; 
+      padding: 10px; 
+      border-radius: 5px; 
+      margin: 10px 0; 
+    }
+    .success-message { 
+      background-color: #4CAF50; 
+      color: white; 
+      padding: 10px; 
+      border-radius: 5px; 
+      margin: 10px 0; 
+    }
+    .warning-message { 
+      background-color: #f5a623; 
+      color: white; 
+      padding: 10px; 
+      border-radius: 5px; 
+      margin: 10px 0; 
+    }
+    .photo-upload-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 20px;
+      display: block;
+      background-color: #3a3a3a;
+    }
+    .rating-stars {
+      color: #f5a623;
+    }
+    .dropdown-menu {
+      background-color: #2e2e2e;
+    }
+    .dropdown-item {
+      color: #f0f0f0;
+    }
+    .dropdown-item:hover {
+      background-color: #3a3a3a;
+      color: #f5a623;
+    }
+    .filter-badge {
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      padding: 5px 10px;
+      border-radius: 20px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+    .filter-badge.active {
+      background-color: #f5a623;
+      color: #1f1f1f;
+    }
+    .filter-badge:hover {
+      opacity: 0.8;
+    }
+    .export-btn {
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .export-btn:hover {
+      background-color: #f5a623;
+      color: #1f1f1f;
+    }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .portfolio-card {
+      overflow: hidden;
+    }
+    .portfolio-actions {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 5px;
+    }
+    .portfolio-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    .pdf-container {
+      background-color: white;
+      color: black;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .pdf-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f5a623;
+    }
+    .pdf-logo {
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+    .pdf-user-info {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .pdf-user-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    .pdf-user-details {
+      flex: 1;
+    }
+    .pdf-section {
+      margin-bottom: 20px;
+    }
+    .pdf-section-title {
+      color: #f5a623;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+    .pdf-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .pdf-table th, .pdf-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .pdf-table th {
+      background-color: #f5a623;
+      color: white;
+    }
+    .pdf-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .pdf-footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 2px solid #f5a623;
+      font-size: 12px;
+      color: #666;
+    }
+    #pdfPreview {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="bg-custom-dark py-3 px-4 shadow">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <button class="btn bg-custom-orange border-0 rounded-pill">
+          <i class="bi bi-file-earmark-text me-2"></i>Panel de Administración
+        </button>
+      </div>
+      <div>
+        <button class="btn bg-custom-red text-white rounded-pill ms-2" id="logoutButton">
+            <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container-fluid py-3">
+    <div class="row g-3">
+      <!-- Sidebar -->
+      <div class="col-lg-3">
+        <div class="bg-custom-darker p-3 rounded-3 shadow">
+          <div class="mb-4">
+            <h3 class="text-custom-orange mb-3">Estadísticas</h3>
+            <div class="d-flex justify-content-between border-bottom border-custom-dark pb-2 mb-2">
+              <span>Usuarios totales</span><span id="totalUsers">-</span>
+            </div>
+            <div class="d-flex justify-content-between border-bottom border-custom-dark pb-2 mb-2">
+              <span>Profesionales</span><span id="totalProfessionals">-</span>
+            </div>
+            <div class="d-flex justify-content-between border-bottom border-custom-dark pb-2 mb-2">
+              <span>Clientes</span><span id="totalClients">-</span>
+            </div>
+            <div class="d-flex justify-content-between border-bottom border-custom-dark pb-2 mb-2">
+              <span>Posts totales</span><span>4,582</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Reportes pendientes</span><span class="text-custom-red fw-bold">12</span>
+            </div>
+          </div>
+
+          <!-- Export Options -->
+          <div class="bg-custom-darker p-3 rounded-3 shadow mb-4">
+            <h3 class="text-custom-orange mb-3">Exportar Datos</h3>
+            <div class="d-grid gap-2">
+              <button class="btn bg-custom-orange text-dark" onclick="exportAllUsersPDF()">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Exportar Todos los Usuarios
+              </button>
+              <button class="btn bg-custom-darkest text-white" onclick="exportProfessionalsPDF()">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Exportar Profesionales
+              </button>
+              <button class="btn bg-custom-darkest text-white" onclick="exportClientsPDF()">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Exportar Clientes
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Filters -->
+          <div class="bg-custom-darker p-3 rounded-3 shadow">
+            <h3 class="text-custom-orange mb-3">Filtros Rápidos</h3>
+            <div class="mb-3">
+              <span class="filter-badge active" onclick="filterUsers('all')">Todos</span>
+              <span class="filter-badge" onclick="filterUsers('profesional')">Profesionales</span>
+              <span class="filter-badge" onclick="filterUsers('cliente')">Clientes</span>
+            </div>
+            <div class="mb-3">
+              <h6 class="text-custom-gray">Especialidades</h6>
+              <div id="specialtyFilters">
+                <!-- Especialidades se cargarán dinámicamente -->
+                <div class="spinner-border spinner-border-sm text-warning" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <h6 class="text-custom-gray">Ciudades</h6>
+              <div id="cityFilters">
+                <!-- Ciudades se cargarán dinámicamente -->
+                <div class="spinner-border spinner-border-sm text-warning" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Panel -->
+      <div class="col-lg-9">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs bg-custom-darker border-0 rounded-top">
+          <li class="nav-item flex-grow-1">
+            <a class="nav-link active" href="#" onclick="changeTab('users')">Usuarios</a>
+          </li>
+          <li class="nav-item flex-grow-1">
+            <a class="nav-link" href="#" onclick="changeTab('portfolios')">Portafolios</a>
+          </li>
+          <li class="nav-item flex-grow-1">
+            <a class="nav-link" href="#" onclick="changeTab('posts')">Posts</a>
+          </li>
+          <li class="nav-item flex-grow-1">
+            <a class="nav-link" href="#" onclick="changeTab('reports')">Reportes</a>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content bg-custom-darker p-3 rounded-bottom rounded-top-0 shadow">
+          <!-- Users Tab -->
+          <div id="users" class="tab-pane active">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="text-custom-orange mb-0">Gestión de Usuarios</h2>
+              <div class="d-flex gap-2">
+                <input type="text" id="searchUsers" class="form-control bg-custom-darkest border-0" placeholder="Buscar usuario...">
+                <div class="dropdown">
+                  <button class="btn bg-custom-darkest dropdown-toggle" data-bs-toggle="dropdown">
+                    Filtrar <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end bg-custom-darker">
+                    <li><a class="dropdown-item" href="#" onclick="filterUsers('all')">Todos</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterUsers('profesional')">Profesionales</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterUsers('cliente')">Clientes</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" onclick="showAdvancedFilters()">Filtros avanzados</a></li>
+                  </ul>
+                </div>
+                <button class="btn bg-custom-green" onclick="refreshUsers()">
+                  <i class="bi bi-arrow-clockwise"></i> Actualizar
+                </button>
+              </div>
+            </div>
+
+            <!-- Advanced Filters (hidden by default) -->
+            <div id="advancedFilters" class="bg-custom-darkest p-3 rounded mb-3" style="display: none;">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Especialidad</label>
+                  <select id="specialtyFilter" class="form-select bg-custom-dark border-0 text-white">
+                    <option value="">Todas</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Ciudad</label>
+                  <select id="cityFilter" class="form-select bg-custom-dark border-0 text-white">
+                    <option value="">Todas</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Ordenar por</label>
+                  <select id="sortFilter" class="form-select bg-custom-dark border-0 text-white">
+                    <option value="nombre_asc">Nombre (A-Z)</option>
+                    <option value="nombre_desc">Nombre (Z-A)</option>
+                    <option value="fecha_asc">Fecha registro (Antigua)</option>
+                    <option value="fecha_desc">Fecha registro (Reciente)</option>
+                    <option value="calificacion">Calificación (Mayor)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end mt-3">
+                <button class="btn bg-custom-red me-2" onclick="clearFilters()">Limpiar</button>
+                <button class="btn bg-custom-orange" onclick="applyAdvancedFilters()">Aplicar Filtros</button>
+              </div>
+            </div>
+
+            <!-- Loading/Error Messages -->
+            <div id="loadingMessage" class="text-center py-4" style="display: none;">
+              <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-2">Cargando usuarios...</p>
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+            <div id="warningMessage" class="warning-message" style="display: none;"></div>
+
+            <!-- Users Table -->
+            <div class="table-responsive">
+              <table class="table table-dark mb-0">
+                <thead>
+                  <tr class="bg-custom-darkest">
+                    <th>Usuario</th>
+                    <th>Tipo</th>
+                    <th>Ciudad</th>
+                    <th>Registro</th>
+                    <th>Especialidad</th>
+                    <th>Estado</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <!-- Users will be populated here -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <div class="text-custom-gray">
+                Mostrando <span id="showingCount">0</span> de <span id="totalCount">0</span> usuarios
+              </div>
+              <nav>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item">
+                    <a class="page-link bg-custom-darkest border-0" href="#" onclick="changePage(-1)">Anterior</a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link bg-custom-orange border-0" href="#" id="currentPage">1</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link bg-custom-darkest border-0" href="#" onclick="changePage(1)">Siguiente</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <!-- Portfolios Tab -->
+          <div id="portfolios" class="tab-pane">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="text-custom-orange mb-0">Portafolios de Profesionales</h2>
+              <div class="d-flex gap-2">
+                <input type="text" id="searchPortfolios" class="form-control bg-custom-darkest border-0" placeholder="Buscar portafolio...">
+                <div class="dropdown">
+                  <button class="btn bg-custom-darkest dropdown-toggle" data-bs-toggle="dropdown">
+                    Filtrar <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end bg-custom-darker">
+                    <li><a class="dropdown-item" href="#" onclick="filterPortfolios('all')">Todos</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterPortfolios('tatuador')">Tatuadores</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterPortfolios('barbero')">Barberos</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterPortfolios('perforador')">Perforadores</a></li>
+                  </ul>
+                </div>
+                <button class="btn bg-custom-green" onclick="refreshPortfolios()">
+                  <i class="bi bi-arrow-clockwise"></i> Actualizar
+                </button>
+              </div>
+            </div>
+
+            <!-- Loading/Error Messages for Portfolios -->
+            <div id="loadingPortfolios" class="text-center py-4" style="display: none;">
+              <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-2">Cargando portafolios...</p>
+            </div>
+
+            <div id="errorPortfolios" class="error-message" style="display: none;"></div>
+
+            <!-- Portfolios Grid -->
+            <div id="portfoliosGrid" class="portfolio-grid">
+              <!-- Portfolios will be populated here -->
+            </div>
+
+            <!-- Pagination for Portfolios -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <div class="text-custom-gray">
+                Mostrando <span id="showingPortfolios">0</span> de <span id="totalPortfolios">0</span> portafolios
+              </div>
+              <nav>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item">
+                    <a class="page-link bg-custom-darkest border-0" href="#" onclick="changePortfolioPage(-1)">Anterior</a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link bg-custom-orange border-0" href="#" id="currentPortfolioPage">1</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link bg-custom-darkest border-0" href="#" onclick="changePortfolioPage(1)">Siguiente</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <!-- Posts Tab -->
+          <div id="posts" class="tab-pane">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="text-custom-orange mb-0">Gestión de Posts</h2>
+              <div class="d-flex gap-2">
+                <input type="text" class="form-control bg-custom-darkest border-0" placeholder="Buscar post...">
+                <div class="dropdown">
+                  <button class="btn bg-custom-darkest dropdown-toggle" data-bs-toggle="dropdown">
+                    Filtrar <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end bg-custom-darker">
+                    <li><a class="dropdown-item" href="#">Todos</a></li>
+                    <li><a class="dropdown-item" href="#">Reportados</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="post-card p-3">
+                  <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex align-items-center">
+                      <div class="user-avatar me-2"></div>
+                      <div>
+                        <p class="mb-0">María López</p>
+                        <p class="text-custom-gray small mb-0">15/04/2025</p>
+                      </div>
+                    </div>
+                    <span class="badge badge-orange">Profesional</span>
+                  </div>
+                  <h4 class="mb-1">Tatuaje Tribal Brazo</h4>
+                  <p class="text-custom-gray small mb-3">Diseño tribal personalizado para brazo completo.</p>
+                  <div class="post-image mb-3">
+                    <img src="https://via.placeholder.com/400x200" alt="Post image">
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-custom-gray small">
+                      <span class="me-3">❤️ 45</span><span>💬 8</span>
+                    </div>
+                    <div>
+                      <button class="btn btn-sm bg-custom-darkest me-2"><i class="bi bi-file-earmark-text me-1"></i>Ver</button>
+                      <button class="btn btn-sm bg-custom-red"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reports Tab -->
+          <div id="reports" class="tab-pane">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="text-custom-orange mb-0">Gestión de Reportes</h2>
+              <div class="d-flex gap-2">
+                <input type="text" class="form-control bg-custom-darkest border-0" placeholder="Buscar reporte...">
+                <div class="dropdown">
+                  <button class="btn bg-custom-darkest dropdown-toggle" data-bs-toggle="dropdown">
+                    Estado <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end bg-custom-darker">
+                    <li><a class="dropdown-item" href="#">Todos</a></li>
+                    <li><a class="dropdown-item" href="#">Pendientes</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-dark mb-0">
+                <thead>
+                  <tr class="bg-custom-darkest">
+                    <th>ID</th><th>Tipo</th><th>Reportado</th><th>Reportador</th><th>Fecha</th><th>Estado</th><th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>#R-1234</td>
+                    <td><span class="badge badge-red">Contenido inapropiado</span></td>
+                    <td>Tatuaje Tribal Brazo</td>
+                    <td>Carlos Rodríguez</td>
+                    <td>15/04/2025</td>
+                    <td><span class="badge badge-orange">Pendiente</span></td>
+                    <td class="text-end">
+                      <button class="report-button view">Ver</button>
+                      <button class="report-button approve">Aprobar</button>
+                      <button class="report-button reject">Rechazar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-custom-orange">Cambiar Contraseña</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="passwordForm">
+            <input type="hidden" id="selectedUserId">
+            <div class="mb-3">
+              <label class="form-label">Usuario</label>
+              <input type="text" id="selectedUserName" class="form-control bg-custom-darkest border-0" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nueva Contraseña</label>
+              <input type="password" id="newPassword" class="form-control bg-custom-darkest border-0" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirmar Contraseña</label>
+              <input type="password" id="confirmPassword" class="form-control bg-custom-darkest border-0" required>
+            </div>
+            <button type="submit" class="btn bg-custom-orange w-100">Guardar Cambios</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Details Modal -->
+  <div class="modal fade" id="userDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-custom-orange">Detalles del Usuario</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="userDetailsContent">
+          <!-- User details will be populated here -->
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn bg-custom-darkest" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn bg-custom-orange" id="exportUserPDFBtn">Exportar a PDF</button>
+          <button type="button" class="btn bg-custom-green" id="editUserBtn">Editar Usuario</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Photo Modal -->
+  <div class="modal fade" id="uploadPhotoModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-custom-orange">Subir Foto de Perfil</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="uploadPhotoForm">
+            <input type="hidden" id="photoUserId">
+            <div class="text-center mb-3">
+              <img id="photoPreview" src="https://via.placeholder.com/150" alt="Vista previa" class="photo-upload-preview">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Usuario</label>
+              <input type="text" id="photoUserName" class="form-control bg-custom-darkest border-0" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Seleccionar Foto</label>
+              <input type="file" id="photoFile" class="form-control bg-custom-darkest border-0" accept="image/jpeg,image/png,image/jpg" required>
+              <div class="form-text text-custom-gray">Formatos permitidos: JPG, JPEG, PNG. Tamaño máximo: 5MB</div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn bg-custom-darkest" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn bg-custom-orange">Subir Foto</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portfolio Details Modal -->
+  <div class="modal fade" id="portfolioDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-custom-orange">Detalles del Portafolio</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="portfolioDetailsContent">
+          <!-- Portfolio details will be populated here -->
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn bg-custom-darkest" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn bg-custom-orange" id="exportPortfolioPDFBtn">Exportar a PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF Preview Modal -->
+  <div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-custom-orange">Vista Previa PDF</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="pdfPreviewContainer">
+            <iframe id="pdfPreview" src="about:blank"></iframe>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn bg-custom-darkest" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn bg-custom-orange" id="downloadPDFBtn">Descargar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Global variables
+    let usersData = [];
+    let professionalsData = [];
+    let portfoliosData = [];
+    let filteredUsers = [];
+    let filteredPortfolios = [];
+    let currentFilter = 'all';
+    let currentPortfolioFilter = 'all';
+    let currentPage = 1;
+    let currentPortfolioPage = 1;
+    let currentPDF = null;
+    const usersPerPage = 10;
+    const portfoliosPerPage = 12;
+    const API_BASE_URL = 'http://localhost:5000/api';
+    const CACHE_KEY_USERS = 'admin_users_cache';
+    const CACHE_KEY_PROFESSIONALS = 'admin_professionals_cache';
+    const CACHE_KEY_PORTFOLIOS = 'admin_portfolios_cache';
+    const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes
+
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+
+    // Cache management
+    function setCache(key, data) {
+      const cacheData = {
+        data: data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(key, JSON.stringify(cacheData));
+    }
+
+    function getCache(key) {
+      try {
+        const cached = localStorage.getItem(key);
+        if (!cached) return null;
+        
+        const cacheData = JSON.parse(cached);
+        const now = Date.now();
+        
+        if (now - cacheData.timestamp > CACHE_EXPIRY) {
+          localStorage.removeItem(key);
+          return null;
+        }
+        
+        return cacheData.data;
+      } catch (error) {
+        console.error('Error reading cache:', error);
+        return null;
+      }
+    }
+
+    // API functions
+    async function fetchUsers(useCache = true) {
+      showLoading(true);
+      hideMessages();
+
+      // Try cache first
+      if (useCache) {
+        const cachedData = getCache(CACHE_KEY_USERS);
+        if (cachedData) {
+          console.log('Using cached users data');
+          usersData = cachedData;
+          processUsers();
+          showLoading(false);
+          return;
+        }
+      }
+
+      try {
+        console.log('Fetching users from API...');
+        const response = await fetch(`${API_BASE_URL}/users/`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        usersData = data;
+        
+        // Cache the data
+        setCache(CACHE_KEY_USERS, data);
+        
+        processUsers();
+        showMessage('Usuarios cargados correctamente', 'success');
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        showMessage(`Error al cargar usuarios: ${error.message}`, 'error');
+        
+        // Try to use cached data as fallback
+        const cachedData = getCache(CACHE_KEY_USERS);
+        if (cachedData) {
+          console.log('Using cached users data as fallback');
+          usersData = cachedData;
+          processUsers();
+          showMessage('Usando datos en caché (sin conexión)', 'warning');
+        }
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function fetchProfessionals(useCache = true) {
+      // Try cache first
+      if (useCache) {
+        const cachedData = getCache(CACHE_KEY_PROFESSIONALS);
+        if (cachedData) {
+          console.log('Using cached professionals data');
+          professionalsData = cachedData;
+          updateFilters();
+          return;
+        }
+      }
+
+      try {
+        console.log('Fetching professionals from API...');
+        const response = await fetch(`${API_BASE_URL}/users/profesionales`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        professionalsData = data;
+        
+        // Cache the data
+        setCache(CACHE_KEY_PROFESSIONALS, data);
+        updateFilters();
+      } catch (error) {
+        console.error('Error fetching professionals:', error);
+        
+        // Try to use cached data as fallback
+        const cachedData = getCache(CACHE_KEY_PROFESSIONALS);
+        if (cachedData) {
+          console.log('Using cached professionals data as fallback');
+          professionalsData = cachedData;
+          updateFilters();
+        }
+      }
+    }
+
+    async function fetchPortfolios(useCache = true) {
+      document.getElementById('loadingPortfolios').style.display = 'block';
+      document.getElementById('errorPortfolios').style.display = 'none';
+
+      // Try cache first
+      if (useCache) {
+        const cachedData = getCache(CACHE_KEY_PORTFOLIOS);
+        if (cachedData) {
+          console.log('Using cached portfolios data');
+          portfoliosData = cachedData;
+          processPortfolios();
+          document.getElementById('loadingPortfolios').style.display = 'none';
+          return;
+        }
+      }
+
+      try {
+        console.log('Fetching portfolios from API...');
+        // Simulamos datos de portafolio para profesionales
+        // En un caso real, esto sería un endpoint como:
+        // const response = await fetch(`${API_BASE_URL}/portfolios/`);
+        
+        // Simulación de datos de portafolio
+        const portfolios = [];
+        
+        // Crear portafolios para cada profesional
+        for (const prof of professionalsData) {
+          // Cada profesional tiene entre 1 y 5 items en su portafolio
+          const itemCount = Math.floor(Math.random() * 5) + 1;
+          
+          for (let i = 0; i < itemCount; i++) {
+            portfolios.push({
+              id: `port_${prof.id}_${i}`,
+              profesional_id: prof.id,
+              nombre_profesional: prof.nombre_completo,
+              especialidad: prof.especialidad,
+              titulo: `Trabajo ${i+1} de ${prof.nombre_completo}`,
+              descripcion: `Descripción del trabajo ${i+1} realizado por ${prof.nombre_completo}`,
+              imagen: `https://picsum.photos/id/${(prof.id * 10) + i}/500/300`,
+              fecha: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
+              likes: Math.floor(Math.random() * 100)
+            });
+          }
+        }
+        
+        portfoliosData = portfolios;
+        
+        // Cache the data
+        setCache(CACHE_KEY_PORTFOLIOS, portfolios);
+        
+        processPortfolios();
+      } catch (error) {
+        console.error('Error fetching portfolios:', error);
+        document.getElementById('errorPortfolios').textContent = `Error al cargar portafolios: ${error.message}`;
+        document.getElementById('errorPortfolios').style.display = 'block';
+        
+        // Try to use cached data as fallback
+        const cachedData = getCache(CACHE_KEY_PORTFOLIOS);
+        if (cachedData) {
+          console.log('Using cached portfolios data as fallback');
+          portfoliosData = cachedData;
+          processPortfolios();
+        }
+      } finally {
+        document.getElementById('loadingPortfolios').style.display = 'none';
+      }
+    }
+
+    async function fetchUserDetails(userId) {
+      showLoading(true);
+      hideMessages();
+
+      try {
+        console.log(`Fetching details for user ${userId}...`);
+        const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Usuario no encontrado');
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const userData = await response.json();
+        return userData;
+      } catch (error) {
+        console.error(`Error fetching user details:`, error);
+        showMessage(`Error al cargar detalles del usuario: ${error.message}`, 'error');
+        return null;
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function deleteUser(userId) {
+      showLoading(true);
+      hideMessages();
+
+      try {
+        console.log(`Deleting user ${userId}...`);
+        const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Usuario no encontrado o ya eliminado');
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Delete result:', result);
+        
+        // Remove from local data
+        usersData = usersData.filter(user => user.id !== userId);
+        
+        // Update cache
+        setCache(CACHE_KEY_USERS, usersData);
+        
+        processUsers();
+        return result;
+      } catch (error) {
+        console.error(`Error deleting user:`, error);
+        showMessage(`Error al eliminar usuario: ${error.message}`, 'error');
+        return null;
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function uploadUserPhoto(userId, photoFile) {
+      showLoading(true);
+      hideMessages();
+
+      try {
+        console.log(`Uploading photo for user ${userId}...`);
+        
+        const formData = new FormData();
+        formData.append('foto', photoFile);
+        
+        const response = await fetch(`${API_BASE_URL}/users/${userId}/upload-photo`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.mensaje || `HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Upload result:', result);
+        
+        // Update user in local data
+        const userIndex = usersData.findIndex(user => user.id === userId);
+        if (userIndex !== -1) {
+          usersData[userIndex].foto_perfil = result.foto_url;
+          
+          // Update cache
+          setCache(CACHE_KEY_USERS, usersData);
+          
+          processUsers();
+        }
+        
+        return result;
+      } catch (error) {
+        console.error(`Error uploading photo:`, error);
+        showMessage(`Error al subir foto: ${error.message}`, 'error');
+        return null;
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function processUsers() {
+      filterUsers(currentFilter);
+      updateStatistics();
+      renderUsers();
+    }
+
+    function processPortfolios() {
+      filterPortfolios(currentPortfolioFilter);
+      renderPortfolios();
+    }
+
+    function updateStatistics() {
+      const total = usersData.length;
+      const professionals = usersData.filter(user => user.tipo === 'profesional').length;
+      const clients = usersData.filter(user => user.tipo === 'cliente').length;
+
+      // Update sidebar stats
+      document.getElementById('totalUsers').textContent = total;
+      document.getElementById('totalProfessionals').textContent = professionals;
+      document.getElementById('totalClients').textContent = clients;
+    }
+
+    function updateFilters() {
+      // Update specialty filters
+      const specialties = [...new Set(professionalsData
+        .filter(p => p.especialidad)
+        .map(p => p.especialidad))];
+      
+      const specialtyFilters = document.getElementById('specialtyFilters');
+      specialtyFilters.innerHTML = '';
+      
+      specialties.forEach(specialty => {
+        const badge = document.createElement('span');
+        badge.className = 'filter-badge';
+        badge.textContent = specialty;
+        badge.onclick = () => {
+          document.getElementById('specialtyFilter').value = specialty;
+          applyAdvancedFilters();
+        };
+        specialtyFilters.appendChild(badge);
+      });
+
+      // Update city filters
+      const cities = [...new Set(usersData
+        .filter(u => u.ciudad)
+        .map(u => u.ciudad))];
+      
+      const cityFilters = document.getElementById('cityFilters');
+      cityFilters.innerHTML = '';
+      
+      cities.forEach(city => {
+        const badge = document.createElement('span');
+        badge.className = 'filter-badge';
+        badge.textContent = city;
+        badge.onclick = () => {
+          document.getElementById('cityFilter').value = city;
+          applyAdvancedFilters();
+        };
+        cityFilters.appendChild(badge);
+      });
+
+      // Update specialty dropdown
+      const specialtyFilter = document.getElementById('specialtyFilter');
+      specialtyFilter.innerHTML = '<option value="">Todas</option>';
+      
+      specialties.forEach(specialty => {
+        const option = document.createElement('option');
+        option.value = specialty;
+        option.textContent = specialty;
+        specialtyFilter.appendChild(option);
+      });
+
+      // Update city dropdown
+      const cityFilter = document.getElementById('cityFilter');
+      cityFilter.innerHTML = '<option value="">Todas</option>';
+      
+      cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        cityFilter.appendChild(option);
+      });
+    }
+
+    function filterUsers(type) {
+      currentFilter = type;
+      currentPage = 1;
+      
+      // Update active filter badge
+      document.querySelectorAll('.filter-badge').forEach(badge => {
+        badge.classList.remove('active');
+      });
+      
+      // Find and activate the corresponding badge
+      document.querySelectorAll('.filter-badge').forEach(badge => {
+        if (badge.textContent.toLowerCase() === 'todos' && type === 'all') {
+          badge.classList.add('active');
+        } else if (badge.textContent.toLowerCase() === type) {
+          badge.classList.add('active');
+        }
+      });
+      
+      if (type === 'all') {
+        filteredUsers = [...usersData];
+      } else {
+        filteredUsers = usersData.filter(user => user.tipo === type);
+      }
+      
+      // Apply search filter if there's a search term
+      const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
+      if (searchTerm) {
+        filteredUsers = filteredUsers.filter(user => 
+          user.nombre_completo.toLowerCase().includes(searchTerm) ||
+          user.username.toLowerCase().includes(searchTerm) ||
+          user.ciudad.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      renderUsers();
+    }
+
+    function filterPortfolios(type) {
+      currentPortfolioFilter = type;
+      currentPortfolioPage = 1;
+      
+      if (type === 'all') {
+        filteredPortfolios = [...portfoliosData];
+      } else {
+        filteredPortfolios = portfoliosData.filter(portfolio => portfolio.especialidad === type);
+      }
+      
+      // Apply search filter if there's a search term
+      const searchTerm = document.getElementById('searchPortfolios')?.value?.toLowerCase();
+      if (searchTerm) {
+        filteredPortfolios = filteredPortfolios.filter(portfolio => 
+          portfolio.titulo.toLowerCase().includes(searchTerm) ||
+          portfolio.nombre_profesional.toLowerCase().includes(searchTerm) ||
+          portfolio.descripcion.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      renderPortfolios();
+    }
+
+    function showAdvancedFilters() {
+      const advancedFilters = document.getElementById('advancedFilters');
+      advancedFilters.style.display = advancedFilters.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function applyAdvancedFilters() {
+      const specialty = document.getElementById('specialtyFilter').value;
+      const city = document.getElementById('cityFilter').value;
+      const sort = document.getElementById('sortFilter').value;
+      
+      // Start with all users or current filter
+      if (currentFilter === 'all') {
+        filteredUsers = [...usersData];
+      } else {
+        filteredUsers = usersData.filter(user => user.tipo === currentFilter);
+      }
+      
+      // Apply specialty filter
+      if (specialty) {
+        filteredUsers = filteredUsers.filter(user => user.especialidad === specialty);
+      }
+      
+      // Apply city filter
+      if (city) {
+        filteredUsers = filteredUsers.filter(user => user.ciudad === city);
+      }
+      
+      // Apply search filter
+      const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
+      if (searchTerm) {
+        filteredUsers = filteredUsers.filter(user => 
+          user.nombre_completo.toLowerCase().includes(searchTerm) ||
+          user.username.toLowerCase().includes(searchTerm) ||
+          user.ciudad.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      // Apply sorting
+      switch (sort) {
+        case 'nombre_asc':
+          filteredUsers.sort((a, b) => a.nombre_completo.localeCompare(b.nombre_completo));
+          break;
+        case 'nombre_desc':
+          filteredUsers.sort((a, b) => b.nombre_completo.localeCompare(a.nombre_completo));
+          break;
+        case 'fecha_asc':
+          filteredUsers.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
+          break;
+        case 'fecha_desc':
+          filteredUsers.sort((a, b) => new Date(b.fecha_registro) - new Date(a.fecha_registro));
+          break;
+        case 'calificacion':
+          filteredUsers.sort((a, b) => {
+            const ratingA = a.calificacion_promedio || 0;
+            const ratingB = b.calificacion_promedio || 0;
+            return ratingB - ratingA;
+          });
+          break;
+      }
+      
+      currentPage = 1;
+      renderUsers();
+    }
+
+    function clearFilters() {
+      document.getElementById('specialtyFilter').value = '';
+      document.getElementById('cityFilter').value = '';
+      document.getElementById('sortFilter').value = 'nombre_asc';
+      document.getElementById('searchUsers').value = '';
+      
+      filterUsers(currentFilter);
+    }
+
+    function searchUsers() {
+      if (document.getElementById('advancedFilters').style.display === 'block') {
+        applyAdvancedFilters();
+      } else {
+        filterUsers(currentFilter);
+      }
+    }
+
+    function searchPortfolios() {
+      filterPortfolios(currentPortfolioFilter);
+    }
+
+    function renderUsers() {
+      const tbody = document.getElementById('usersTableBody');
+      const startIndex = (currentPage - 1) * usersPerPage;
+      const endIndex = startIndex + usersPerPage;
+      const pageUsers = filteredUsers.slice(startIndex, endIndex);
+
+      tbody.innerHTML = '';
+
+      if (pageUsers.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-4">
+              <i class="bi bi-person-x fs-1 text-custom-gray"></i>
+              <p class="mt-2 text-custom-gray">No se encontraron usuarios</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      pageUsers.forEach(user => {
+        const row = createUserRow(user);
+        tbody.appendChild(row);
+      });
+
+      updatePagination();
+    }
+
+    function renderPortfolios() {
+      const grid = document.getElementById('portfoliosGrid');
+      const startIndex = (currentPortfolioPage - 1) * portfoliosPerPage;
+      const endIndex = startIndex + portfoliosPerPage;
+      const pagePortfolios = filteredPortfolios.slice(startIndex, endIndex);
+
+      grid.innerHTML = '';
+
+      if (pagePortfolios.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <i class="bi bi-images fs-1 text-custom-gray"></i>
+            <p class="mt-2 text-custom-gray">No se encontraron portafolios</p>
+          </div>
+        `;
+        return;
+      }
+
+      pagePortfolios.forEach(portfolio => {
+        const card = createPortfolioCard(portfolio);
+        grid.appendChild(card);
+      });
+
+      updatePortfolioPagination();
+    }
+
+    function hardLogout() {
+  // Limpiar todos los almacenamientos
+  localStorage.clear();
+  sessionStorage.clear();
+  
+  // Limpiar cookies
+  document.cookie.split(";").forEach(cookie => {
+    document.cookie = cookie.replace(/^ +/, "")
+      .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+  });
+  
+  // Forzar recarga sin caché
+  window.location.href = `index.html?nocache=${new Date().getTime()}`;
+  
+  // Opcional: Invalidar el caché del service worker si usas PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(registration => registration.unregister());
+    });
+  }
+}
+
+// Asignar al botón
+document.getElementById('logoutButton').addEventListener('click', hardLogout);
+
+    function createUserRow(user) {
+      const tr = document.createElement('tr');
+      
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES');
+      };
+
+      const getProfileImage = (user) => {
+        if (user.foto_perfil && user.foto_perfil !== null) {
+          return `${API_BASE_URL.replace('/api', '')}${user.foto_perfil}`;
+        }
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nombre_completo)}&background=3a3a3a&color=f0f0f0&size=32`;
+      };
+
+      const getBadgeClass = (tipo) => {
+        return tipo === 'profesional' ? 'badge-blue' : 'badge-green';
+      };
+
+      tr.innerHTML = `
+        <td>
+          <div class="d-flex align-items-center">
+            <img src="${getProfileImage(user)}" alt="${user.nombre_completo}" class="user-avatar me-2" 
+                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user.nombre_completo)}&background=3a3a3a&color=f0f0f0&size=32'">
+            <div>
+              <div class="fw-bold">${user.nombre_completo}</div>
+              <div class="small text-custom-gray">@${user.username}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="badge ${getBadgeClass(user.tipo)}">${user.tipo}</span></td>
+        <td>${user.ciudad}</td>
+        <td>${formatDate(user.fecha_registro)}</td>
+        <td>${user.especialidad || '-'}</td>
+        <td><span class="badge badge-green">Activo</span></td>
+        <td class="text-end">
+          <button class="action-button" onclick="openPasswordModal(${user.id}, '${user.nombre_completo}')" title="Cambiar contraseña">
+            <i class="bi bi-key"></i>
+          </button>
+          <button class="action-button" onclick="openPhotoModal(${user.id}, '${user.nombre_completo}', '${getProfileImage(user)}')" title="Cambiar foto">
+            <i class="bi bi-camera"></i>
+          </button>
+          <button class="action-button" onclick="viewUserDetails(${user.id})" title="Ver detalles">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="action-button" onclick="exportUserToPDF(${user.id})" title="Exportar a PDF">
+            <i class="bi bi-file-earmark-pdf"></i>
+          </button>
+          <button class="action-button delete" onclick="confirmDeleteUser(${user.id}, '${user.nombre_completo}')" title="Eliminar usuario">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      `;
+
+      return tr;
+    }
+
+    function createPortfolioCard(portfolio) {
+      const div = document.createElement('div');
+      div.className = 'portfolio-card position-relative';
+      
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES');
+      };
+
+      div.innerHTML = `
+        <span class="badge badge-blue portfolio-badge">${portfolio.especialidad}</span>
+        <div class="portfolio-image">
+          <img src="${portfolio.imagen}" alt="${portfolio.titulo}" onerror="this.src='https://via.placeholder.com/500x300?text=Sin+Imagen'">
+        </div>
+        <div class="p-3">
+          <h5 class="mb-1">${portfolio.titulo}</h5>
+          <p class="text-custom-gray small mb-2">${portfolio.nombre_profesional}</p>
+          <p class="small mb-3">${portfolio.descripcion.substring(0, 100)}${portfolio.descripcion.length > 100 ? '...' : ''}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="text-custom-gray small">
+              <span><i class="bi bi-heart-fill text-danger me-1"></i>${portfolio.likes}</span>
+              <span class="ms-2"><i class="bi bi-calendar me-1"></i>${formatDate(portfolio.fecha)}</span>
+            </div>
+            <div class="portfolio-actions">
+              <button class="btn btn-sm bg-custom-darkest" onclick="viewPortfolioDetails('${portfolio.id}')" title="Ver detalles">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm bg-custom-orange" onclick="exportPortfolioToPDF('${portfolio.id}')" title="Exportar a PDF">
+                <i class="bi bi-file-earmark-pdf"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      return div;
+    }
+
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+      const showingStart = filteredUsers.length > 0 ? (currentPage - 1) * usersPerPage + 1 : 0;
+      const showingEnd = Math.min(currentPage * usersPerPage, filteredUsers.length);
+
+      document.getElementById('showingCount').textContent = `${showingStart}-${showingEnd}`;
+      document.getElementById('totalCount').textContent = filteredUsers.length;
+      document.getElementById('currentPage').textContent = currentPage;
+
+      // Update pagination buttons
+      const prevBtn = document.querySelector('.pagination .page-item:first-child');
+      const nextBtn = document.querySelector('.pagination .page-item:last-child');
+      
+      prevBtn.classList.toggle('disabled', currentPage === 1);
+      nextBtn.classList.toggle('disabled', currentPage === totalPages || totalPages === 0);
+    }
+
+    function updatePortfolioPagination() {
+      const totalPages = Math.ceil(filteredPortfolios.length / portfoliosPerPage);
+      const showingStart = filteredPortfolios.length > 0 ? (currentPortfolioPage - 1) * portfoliosPerPage + 1 : 0;
+      const showingEnd = Math.min(currentPortfolioPage * portfoliosPerPage, filteredPortfolios.length);
+
+      document.getElementById('showingPortfolios').textContent = `${showingStart}-${showingEnd}`;
+      document.getElementById('totalPortfolios').textContent = filteredPortfolios.length;
+      document.getElementById('currentPortfolioPage').textContent = currentPortfolioPage;
+
+      // Update pagination buttons
+      const prevBtn = document.querySelector('#portfolios .pagination .page-item:first-child');
+      const nextBtn = document.querySelector('#portfolios .pagination .page-item:last-child');
+      
+      prevBtn.classList.toggle('disabled', currentPortfolioPage === 1);
+      nextBtn.classList.toggle('disabled', currentPortfolioPage === totalPages || totalPages === 0);
+    }
+
+    function changePage(direction) {
+      const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+      const newPage = currentPage + direction;
+      
+      if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        renderUsers();
+      }
+    }
+
+    function changePortfolioPage(direction) {
+      const totalPages = Math.ceil(filteredPortfolios.length / portfoliosPerPage);
+      const newPage = currentPortfolioPage + direction;
+      
+      if (newPage >= 1 && newPage <= totalPages) {
+        currentPortfolioPage = newPage;
+        renderPortfolios();
+      }
+    }
+
+    // UI Helper functions
+    function showLoading(show) {
+      document.getElementById('loadingMessage').style.display = show ? 'block' : 'none';
+    }
+
+    function hideMessages() {
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'none';
+      document.getElementById('warningMessage').style.display = 'none';
+    }
+
+    function showMessage(message, type = 'success') {
+      hideMessages();
+      
+      if (type === 'error') {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      } else if (type === 'warning') {
+        const warningDiv = document.getElementById('warningMessage');
+        warningDiv.textContent = message;
+        warningDiv.style.display = 'block';
+      } else {
+        const successDiv = document.getElementById('successMessage');
+        successDiv.textContent = message;
+        successDiv.style.display = 'block';
+      }
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        hideMessages();
+      }, 5000);
+    }
+
+    function showToast(message, type = 'success') {
+      // Create temporary message element
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `${type === 'success' ? 'success-message' : type === 'warning' ? 'warning-message' : 'error-message'} position-fixed top-0 start-50 translate-middle-x mt-3`;
+      messageDiv.style.zIndex = '9999';
+      messageDiv.textContent = message;
+      
+      document.body.appendChild(messageDiv);
+      
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 3000);
+    }
+
+    // Modal functions
+    function openPasswordModal(userId, userName) {
+      document.getElementById('selectedUserId').value = userId;
+      document.getElementById('selectedUserName').value = userName;
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      
+      new bootstrap.Modal(document.getElementById('passwordModal')).show();
+    }
+
+    function openPhotoModal(userId, userName, currentPhoto) {
+      document.getElementById('photoUserId').value = userId;
+      document.getElementById('photoUserName').value = userName;
+      document.getElementById('photoFile').value = '';
+      document.getElementById('photoPreview').src = currentPhoto;
+      
+      new bootstrap.Modal(document.getElementById('uploadPhotoModal')).show();
+    }
+
+    async function viewUserDetails(userId) {
+      const userDetailsContent = document.getElementById('userDetailsContent');
+      userDetailsContent.innerHTML = `
+        <div class="text-center py-4">
+          <div class="spinner-border text-warning" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2">Cargando detalles del usuario...</p>
+        </div>
+      `;
+      
+      new bootstrap.Modal(document.getElementById('userDetailsModal')).show();
+      
+      const userData = await fetchUserDetails(userId);
+      
+      if (!userData) {
+        userDetailsContent.innerHTML = `
+          <div class="text-center py-4">
+            <i class="bi bi-exclamation-triangle fs-1 text-custom-red"></i>
+            <p class="mt-2">No se pudieron cargar los detalles del usuario</p>
+          </div>
+        `;
+        return;
+      }
+
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString('es-ES');
+      };
+
+      const getProfileImage = (user) => {
+        if (user.foto_perfil && user.foto_perfil !== null) {
+          return `${API_BASE_URL.replace('/api', '')}${user.foto_perfil}`;
+        }
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nombre_completo)}&background=3a3a3a&color=f0f0f0&size=128`;
+      };
+
+      const renderRating = (rating) => {
+        if (rating === undefined || rating === null) return '-';
+        
+        const fullStars = Math.floor(rating);
+        const halfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+        
+        let starsHtml = '';
+        
+        for (let i = 0; i < fullStars; i++) {
+          starsHtml += '<i class="bi bi-star-fill rating-stars"></i>';
+        }
+        
+        if (halfStar) {
+          starsHtml += '<i class="bi bi-star-half rating-stars"></i>';
+        }
+        
+        for (let i = 0; i < emptyStars; i++) {
+          starsHtml += '<i class="bi bi-star rating-stars"></i>';
+        }
+        
+        return `${starsHtml} <span class="ms-1">(${rating.toFixed(1)})</span>`;
+      };
+
+      const content = `
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <img src="${getProfileImage(userData)}" alt="${userData.nombre_completo}" 
+                 class="rounded-circle mb-3" style="width: 128px; height: 128px; object-fit: cover;"
+                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(userData.nombre_completo)}&background=3a3a3a&color=f0f0f0&size=128'">
+            <h4>${userData.nombre_completo}</h4>
+            <p class="text-custom-gray">@${userData.username}</p>
+            <button class="btn btn-sm bg-custom-orange mt-2" onclick="openPhotoModal(${userData.id}, '${userData.nombre_completo}', '${getProfileImage(userData)}')">
+              <i class="bi bi-camera me-1"></i>Cambiar foto
+            </button>
+          </div>
+          <div class="col-md-8">
+            <table class="table table-dark">
+              <tr><td><strong>ID:</strong></td><td>${userData.id}</td></tr>
+              <tr><td><strong>Tipo:</strong></td><td><span class="badge ${userData.tipo === 'profesional' ? 'badge-blue' : 'badge-green'}">${userData.tipo}</span></td></tr>
+              <tr><td><strong>Ciudad:</strong></td><td>${userData.ciudad}</td></tr>
+              <tr><td><strong>Fecha de registro:</strong></td><td>${formatDate(userData.fecha_registro)}</td></tr>
+              ${userData.especialidad ? `<tr><td><strong>Especialidad:</strong></td><td>${userData.especialidad}</td></tr>` : ''}
+              ${userData.calificacion_promedio !== undefined ? `<tr><td><strong>Calificación:</strong></td><td>${renderRating(userData.calificacion_promedio)}</td></tr>` : ''}
+              ${userData.experiencia ? `<tr><td><strong>Experiencia:</strong></td><td>${userData.experiencia} años</td></tr>` : ''}
+              ${userData.descripcion ? `<tr><td><strong>Descripción:</strong></td><td>${userData.descripcion}</td></tr>` : ''}
+            </table>
+          </div>
+        </div>
+      `;
+
+      userDetailsContent.innerHTML = content;
+      
+      // Update export button to link to the user ID
+      document.getElementById('exportUserPDFBtn').onclick = function() {
+        exportUserToPDF(userData.id);
+      };
+      
+      // Update edit button to link to the user ID
+      document.getElementById('editUserBtn').onclick = function() {
+        // Here you would implement edit functionality
+        showToast(`Función de edición para usuario ${userData.id} no implementada`, 'warning');
+      };
+    }
+
+    async function viewPortfolioDetails(portfolioId) {
+      const portfolio = portfoliosData.find(p => p.id === portfolioId);
+      if (!portfolio) {
+        showToast('Portafolio no encontrado', 'error');
+        return;
+      }
+      
+      const portfolioDetailsContent = document.getElementById('portfolioDetailsContent');
+      
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString('es-ES');
+      };
+      
+      // Find the professional
+      const professional = professionalsData.find(p => p.id === portfolio.profesional_id);
+      
+      const content = `
+        <div class="row">
+          <div class="col-md-6">
+            <img src="${portfolio.imagen}" alt="${portfolio.titulo}" class="img-fluid rounded mb-3" 
+                 onerror="this.src='https://via.placeholder.com/500x300?text=Sin+Imagen'">
+            <h4>${portfolio.titulo}</h4>
+            <p class="text-custom-gray">Por: ${portfolio.nombre_profesional}</p>
+            <p>${portfolio.descripcion}</p>
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-heart-fill text-danger me-2"></i>
+              <span>${portfolio.likes} likes</span>
+              <span class="ms-3"><i class="bi bi-calendar me-1"></i>${formatDate(portfolio.fecha)}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="bg-custom-darkest p-3 rounded">
+              <h5 class="text-custom-orange">Información del Profesional</h5>
+              <div class="d-flex align-items-center mb-3">
+                <img src="${professional ? `${API_BASE_URL.replace('/api', '')}${professional.foto_perfil}` : 'https://via.placeholder.com/64'}" 
+                     alt="${portfolio.nombre_profesional}" class="rounded-circle me-3" 
+                     style="width: 64px; height: 64px; object-fit: cover;"
+                     onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(portfolio.nombre_profesional)}&background=3a3a3a&color=f0f0f0&size=64'">
+                <div>
+                  <h6 class="mb-0">${portfolio.nombre_profesional}</h6>
+                  <span class="badge badge-blue">${portfolio.especialidad}</span>
+                </div>
+              </div>
+              <table class="table table-dark">
+                <tr><td><strong>Ciudad:</strong></td><td>${professional ? professional.ciudad : '-'}</td></tr>
+                <tr><td><strong>Especialidad:</strong></td><td>${portfolio.especialidad}</td></tr>
+                ${professional && professional.calificacion_promedio !== undefined ? 
+                  `<tr><td><strong>Calificación:</strong></td><td>
+                    <i class="bi bi-star-fill rating-stars"></i>
+                    <span class="ms-1">${professional.calificacion_promedio.toFixed(1)}</span>
+                  </td></tr>` : ''}
+                ${professional && professional.experiencia ? 
+                  `<tr><td><strong>Experiencia:</strong></td><td>${professional.experiencia} años</td></tr>` : ''}
+              </table>
+              <button class="btn bg-custom-orange w-100" onclick="viewUserDetails(${portfolio.profesional_id})">
+                <i class="bi bi-person me-2"></i>Ver Perfil Completo
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      portfolioDetailsContent.innerHTML = content;
+      
+      // Update export button
+      document.getElementById('exportPortfolioPDFBtn').onclick = function() {
+        exportPortfolioToPDF(portfolioId);
+      };
+      
+      new bootstrap.Modal(document.getElementById('portfolioDetailsModal')).show();
+    }
+
+    async function confirmDeleteUser(userId, userName) {
+      if (confirm(`¿Estás seguro de que quieres eliminar al usuario "${userName}"?`)) {
+        const result = await deleteUser(userId);
+        if (result) {
+          showToast(`Usuario "${userName}" eliminado correctamente`, 'success');
+        }
+      }
+    }
+
+    function refreshUsers() {
+      // Clear cache and fetch fresh data
+      localStorage.removeItem(CACHE_KEY_USERS);
+      localStorage.removeItem(CACHE_KEY_PROFESSIONALS);
+      fetchUsers(false);
+      fetchProfessionals(false);
+    }
+
+    function refreshPortfolios() {
+      // Clear cache and fetch fresh data
+      localStorage.removeItem(CACHE_KEY_PORTFOLIOS);
+      fetchPortfolios(false);
+    }
+
+    // PDF Generation Functions - Fixed setFillColor issues
+    async function exportUserToPDF(userId) {
+      showLoading(true);
+      
+      try {
+        const userData = await fetchUserDetails(userId);
+        if (!userData) {
+          throw new Error('No se pudo obtener la información del usuario');
+        }
+        
+        const doc = new jsPDF();
+        
+        // Set document properties
+        doc.setProperties({
+          title: `Perfil de ${userData.nombre_completo}`,
+          subject: 'Información de usuario',
+          author: 'Panel de Administración',
+          keywords: 'usuario, perfil, pdf',
+          creator: 'Panel de Administración'
+        });
+        
+        // Add header
+        doc.setFontSize(22);
+        doc.setTextColor(245, 166, 35); // Orange color
+        doc.text('PERFIL DE USUARIO', 105, 20, { align: 'center' });
+        
+        // Add user info
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${userData.nombre_completo}`, 105, 30, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`@${userData.username}`, 105, 37, { align: 'center' });
+        
+        // Add user type badge - Fixed setFillColor
+        if (userData.tipo === 'profesional') {
+          doc.setFillColor(0, 123, 255); // Blue RGB
+        } else {
+          doc.setFillColor(76, 175, 80); // Green RGB
+        }
+        doc.roundedRect(85, 42, 40, 10, 5, 5, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.text(userData.tipo.toUpperCase(), 105, 48, { align: 'center' });
+        
+        // Add user details
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(14);
+        doc.text('Información Personal', 20, 65);
+        
+        doc.setDrawColor(245, 166, 35);
+        doc.line(20, 67, 190, 67);
+        
+        doc.setFontSize(12);
+        doc.text(`ID: ${userData.id}`, 20, 75);
+        doc.text(`Ciudad: ${userData.ciudad}`, 20, 83);
+        doc.text(`Fecha de registro: ${new Date(userData.fecha_registro).toLocaleDateString('es-ES')}`, 20, 91);
+        
+        let yPos = 99;
+        
+        // Add professional specific info if applicable
+        if (userData.tipo === 'profesional') {
+          doc.setFontSize(14);
+          doc.text('Información Profesional', 20, yPos);
+          
+          doc.setDrawColor(245, 166, 35);
+          doc.line(20, yPos + 2, 190, yPos + 2);
+          
+          yPos += 10;
+          doc.setFontSize(12);
+          
+          if (userData.especialidad) {
+            doc.text(`Especialidad: ${userData.especialidad}`, 20, yPos);
+            yPos += 8;
+          }
+          
+          if (userData.calificacion_promedio !== undefined) {
+            doc.text(`Calificación promedio: ${userData.calificacion_promedio.toFixed(1)}/5`, 20, yPos);
+            yPos += 8;
+          }
+          
+          if (userData.experiencia) {
+            doc.text(`Experiencia: ${userData.experiencia} años`, 20, yPos);
+            yPos += 8;
+          }
+          
+          if (userData.descripcion) {
+            doc.text('Descripción:', 20, yPos);
+            yPos += 8;
+            
+            const splitDescription = doc.splitTextToSize(userData.descripcion, 170);
+            doc.text(splitDescription, 20, yPos);
+            yPos += splitDescription.length * 7;
+          }
+        }
+        
+        // Add footer
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Documento generado el ${new Date().toLocaleString('es-ES')}`, 105, 280, { align: 'center' });
+        doc.text('Panel de Administración', 105, 285, { align: 'center' });
+        
+        // Save the PDF
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        
+        // Store current PDF for download
+        currentPDF = {
+          blob: pdfBlob,
+          filename: `usuario_${userData.id}_${userData.username}.pdf`
+        };
+        
+        // Show preview
+        document.getElementById('pdfPreview').src = pdfUrl;
+        new bootstrap.Modal(document.getElementById('pdfPreviewModal')).show();
+        
+        // Setup download button
+        document.getElementById('downloadPDFBtn').onclick = downloadCurrentPDF;
+        
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        showToast(`Error al generar PDF: ${error.message}`, 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function exportPortfolioToPDF(portfolioId) {
+      showLoading(true);
+      
+      try {
+        const portfolio = portfoliosData.find(p => p.id === portfolioId);
+        if (!portfolio) {
+          throw new Error('No se pudo obtener la información del portafolio');
+        }
+        
+        // Find the professional
+        const professional = professionalsData.find(p => p.id === portfolio.profesional_id);
+        
+        const doc = new jsPDF();
+        
+        // Set document properties
+        doc.setProperties({
+          title: `Portafolio: ${portfolio.titulo}`,
+          subject: 'Información de portafolio',
+          author: 'Panel de Administración',
+          keywords: 'portafolio, profesional, pdf',
+          creator: 'Panel de Administración'
+        });
+        
+        // Add header
+        doc.setFontSize(22);
+        doc.setTextColor(245, 166, 35); // Orange color
+        doc.text('DETALLE DE PORTAFOLIO', 105, 20, { align: 'center' });
+        
+        // Add portfolio title
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${portfolio.titulo}`, 105, 30, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Por: ${portfolio.nombre_profesional}`, 105, 37, { align: 'center' });
+        
+        // Add specialty badge - Fixed setFillColor
+        doc.setFillColor(0, 123, 255); // Blue RGB
+        doc.roundedRect(85, 42, 40, 10, 5, 5, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.text(portfolio.especialidad.toUpperCase(), 105, 48, { align: 'center' });
+        
+        // Add portfolio details
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(14);
+        doc.text('Detalles del Trabajo', 20, 65);
+        
+        doc.setDrawColor(245, 166, 35);
+        doc.line(20, 67, 190, 67);
+        
+        doc.setFontSize(12);
+        
+        // Add description
+        const splitDescription = doc.splitTextToSize(portfolio.descripcion, 170);
+        doc.text(splitDescription, 20, 75);
+        
+        let yPos = 75 + splitDescription.length * 7 + 10;
+        
+        // Add stats
+        doc.text(`Likes: ${portfolio.likes}`, 20, yPos);
+        doc.text(`Fecha: ${new Date(portfolio.fecha).toLocaleDateString('es-ES')}`, 100, yPos);
+        
+        yPos += 15;
+        
+        // Add professional info
+        doc.setFontSize(14);
+        doc.text('Información del Profesional', 20, yPos);
+        
+        doc.setDrawColor(245, 166, 35);
+        doc.line(20, yPos + 2, 190, yPos + 2);
+        
+        yPos += 10;
+        doc.setFontSize(12);
+        
+        doc.text(`Nombre: ${portfolio.nombre_profesional}`, 20, yPos);
+        yPos += 8;
+        
+        doc.text(`Especialidad: ${portfolio.especialidad}`, 20, yPos);
+        yPos += 8;
+        
+        if (professional) {
+          doc.text(`Ciudad: ${professional.ciudad}`, 20, yPos);
+          yPos += 8;
+          
+          if (professional.calificacion_promedio !== undefined) {
+            doc.text(`Calificación: ${professional.calificacion_promedio.toFixed(1)}/5`, 20, yPos);
+            yPos += 8;
+          }
+          
+          if (professional.experiencia) {
+            doc.text(`Experiencia: ${professional.experiencia} años`, 20, yPos);
+            yPos += 8;
+          }
+        }
+        
+        // Add footer
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Documento generado el ${new Date().toLocaleString('es-ES')}`, 105, 280, { align: 'center' });
+        doc.text('Panel de Administración', 105, 285, { align: 'center' });
+        
+        // Save the PDF
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        
+        // Store current PDF for download
+        currentPDF = {
+          blob: pdfBlob,
+          filename: `portafolio_${portfolioId}.pdf`
+        };
+        
+        // Show preview
+        document.getElementById('pdfPreview').src = pdfUrl;
+        new bootstrap.Modal(document.getElementById('pdfPreviewModal')).show();
+        
+        // Setup download button
+        document.getElementById('downloadPDFBtn').onclick = downloadCurrentPDF;
+        
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        showToast(`Error al generar PDF: ${error.message}`, 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function exportAllUsersPDF() {
+      showLoading(true);
+      
+      try {
+        if (usersData.length === 0) {
+          throw new Error('No hay usuarios para exportar');
+        }
+        
+        const doc = new jsPDF();
+        
+        // Set document properties
+        doc.setProperties({
+          title: 'Lista de Usuarios',
+          subject: 'Información de usuarios',
+          author: 'Panel de Administración',
+          keywords: 'usuarios, lista, pdf',
+          creator: 'Panel de Administración'
+        });
+        
+        // Add header
+        doc.setFontSize(22);
+        doc.setTextColor(245, 166, 35); // Orange color
+        doc.text('LISTA DE USUARIOS', 105, 20, { align: 'center' });
+        
+        // Add date
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Generado: ${new Date().toLocaleString('es-ES')}`, 105, 28, { align: 'center' });
+        
+        // Add stats
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Total: ${usersData.length} usuarios`, 20, 40);
+        doc.text(`Profesionales: ${usersData.filter(u => u.tipo === 'profesional').length}`, 20, 48);
+        doc.text(`Clientes: ${usersData.filter(u => u.tipo === 'cliente').length}`, 20, 56);
+        
+        // Add table header
+        let yPos = 70;
+        doc.setFillColor(245, 166, 35); // Orange RGB
+        doc.rect(20, yPos, 170, 10, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.text('ID', 25, yPos + 7);
+        doc.text('Nombre', 45, yPos + 7);
+        doc.text('Tipo', 110, yPos + 7);
+        doc.text('Ciudad', 135, yPos + 7);
+        doc.text('Registro', 170, yPos + 7);
+        
+        // Add table rows
+        yPos += 10;
+        doc.setTextColor(0, 0, 0);
+        
+        let pageCount = 1;
+        
+        for (let i = 0; i < usersData.length; i++) {
+          const user = usersData[i];
+          
+          // Check if we need a new page
+          if (yPos > 270) {
+            doc.addPage();
+            pageCount++;
+            
+            // Add header to new page
+            doc.setFontSize(14);
+            doc.setTextColor(245, 166, 35);
+            doc.text(`LISTA DE USUARIOS (Página ${pageCount})`, 105, 20, { align: 'center' });
+            
+            // Add table header to new page
+            yPos = 30;
+            doc.setFillColor(245, 166, 35); // Orange RGB
+            doc.rect(20, yPos, 170, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text('ID', 25, yPos + 7);
+            doc.text('Nombre', 45, yPos + 7);
+            doc.text('Tipo', 110, yPos + 7);
+            doc.text('Ciudad', 135, yPos + 7);
+            doc.text('Registro', 170, yPos + 7);
+            
+            yPos += 10;
+            doc.setTextColor(0, 0, 0);
+          }
+          
+          // Add row background (alternating)
+          if (i % 2 === 0) {
+            doc.setFillColor(240, 240, 240); // Light gray RGB
+            doc.rect(20, yPos, 170, 8, 'F');
+          }
+          
+          // Add row data
+          doc.setFontSize(10);
+          doc.text(user.id.toString(), 25, yPos + 5);
+          doc.text(user.nombre_completo.substring(0, 30), 45, yPos + 5);
+          doc.text(user.tipo, 110, yPos + 5);
+          doc.text(user.ciudad.substring(0, 15), 135, yPos + 5);
+          doc.text(new Date(user.fecha_registro).toLocaleDateString('es-ES'), 170, yPos + 5);
+          
+          yPos += 8;
+        }
+        
+        // Add footer
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Página ${pageCount} de ${pageCount}`, 105, 280, { align: 'center' });
+        doc.text('Panel de Administración', 105, 285, { align: 'center' });
+        
+        // Save the PDF
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        
+        // Store current PDF for download
+        currentPDF = {
+          blob: pdfBlob,
+          filename: `lista_usuarios_${new Date().toISOString().split('T')[0]}.pdf`
+        };
+        
+        // Show preview
+        document.getElementById('pdfPreview').src = pdfUrl;
+        new bootstrap.Modal(document.getElementById('pdfPreviewModal')).show();
+        
+        // Setup download button
+        document.getElementById('downloadPDFBtn').onclick = downloadCurrentPDF;
+        
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        showToast(`Error al generar PDF: ${error.message}`, 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function exportProfessionalsPDF() {
+      showLoading(true);
+      
+      try {
+        const professionals = usersData.filter(u => u.tipo === 'profesional');
+        
+        if (professionals.length === 0) {
+          throw new Error('No hay profesionales para exportar');
+        }
+        
+        const doc = new jsPDF();
+        
+        // Set document properties
+        doc.setProperties({
+          title: 'Lista de Profesionales',
+          subject: 'Información de profesionales',
+          author: 'Panel de Administración',
+          keywords: 'profesionales, lista, pdf',
+          creator: 'Panel de Administración'
+        });
+        
+        // Add header
+        doc.setFontSize(22);
+        doc.setTextColor(245, 166, 35); // Orange color
+        doc.text('LISTA DE PROFESIONALES', 105, 20, { align: 'center' });
+        
+        // Add date
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Generado: ${new Date().toLocaleString('es-ES')}`, 105, 28, { align: 'center' });
+        
+        // Add stats
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Total: ${professionals.length} profesionales`, 20, 40);
+        
+        // Group by specialty
+        const specialties = {};
+        professionals.forEach(p => {
+          if (p.especialidad) {
+            specialties[p.especialidad] = (specialties[p.especialidad] || 0) + 1;
+          }
+        });
+        
+        let yPos = 48;
+        for (const [specialty, count] of Object.entries(specialties)) {
+          doc.text(`${specialty}: ${count}`, 20, yPos);
+          yPos += 8;
+        }
+        
+        // Add table header
+        yPos = Math.max(yPos + 10, 70);
+        doc.setFillColor(245, 166, 35); // Orange RGB
+        doc.rect(20, yPos, 170, 10, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.text('ID', 25, yPos + 7);
+        doc.text('Nombre', 45, yPos + 7);
+        doc.text('Especialidad', 110, yPos + 7);
+        doc.text('Ciudad', 145, yPos + 7);
+        doc.text('Rating', 175, yPos + 7);
+        
+        // Add table rows
+        yPos += 10;
+        doc.setTextColor(0, 0, 0);
+        
+        let pageCount = 1;
+        
+        for (let i = 0; i < professionals.length; i++) {
+          const prof = professionals[i];
+          
+          // Check if we need a new page
+          if (yPos > 270) {
+            doc.addPage();
+            pageCount++;
+            
+            // Add header to new page
+            doc.setFontSize(14);
+            doc.setTextColor(245, 166, 35);
+            doc.text(`LISTA DE PROFESIONALES (Página ${pageCount})`, 105, 20, { align: 'center' });
+            
+            // Add table header to new page
+            yPos = 30;
+            doc.setFillColor(245, 166, 35); // Orange RGB
+            doc.rect(20, yPos, 170, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text('ID', 25, yPos + 7);
+            doc.text('Nombre', 45, yPos + 7);
+            doc.text('Especialidad', 110, yPos + 7);
+            doc.text('Ciudad', 145, yPos + 7);
+            doc.text('Rating', 175, yPos + 7);
+            
+            yPos += 10;
+            doc.setTextColor(0, 0, 0);
+          }
+          
+          // Add row background (alternating)
+          if (i % 2 === 0) {
+            doc.setFillColor(240, 240, 240); // Light gray RGB
+            doc.rect(20, yPos, 170, 8, 'F');
+          }
+          
+          // Add row data
+          doc.setFontSize(10);
+          doc.text(prof.id.toString(), 25, yPos + 5);
+          doc.text(prof.nombre_completo.substring(0, 30), 45, yPos + 5);
+          doc.text(prof.especialidad || '-', 110, yPos + 5);
+          doc.text(prof.ciudad.substring(0, 15), 145, yPos + 5);
+          doc.text(prof.calificacion_promedio !== undefined ? prof.calificacion_promedio.toFixed(1) : '-', 175, yPos + 5);
+          
+          yPos += 8;
+        }
+        
+        // Add footer
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Página ${pageCount} de ${pageCount}`, 105, 280, { align: 'center' });
+        doc.text('Panel de Administración', 105, 285, { align: 'center' });
+        
+        // Save the PDF
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        
+        // Store current PDF for download
+        currentPDF = {
+          blob: pdfBlob,
+          filename: `lista_profesionales_${new Date().toISOString().split('T')[0]}.pdf`
+        };
+        
+        // Show preview
+        document.getElementById('pdfPreview').src = pdfUrl;
+        new bootstrap.Modal(document.getElementById('pdfPreviewModal')).show();
+        
+        // Setup download button
+        document.getElementById('downloadPDFBtn').onclick = downloadCurrentPDF;
+        
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        showToast(`Error al generar PDF: ${error.message}`, 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function exportClientsPDF() {
+      showLoading(true);
+      
+      try {
+        const clients = usersData.filter(u => u.tipo === 'cliente');
+        
+        if (clients.length === 0) {
+          throw new Error('No hay clientes para exportar');
+        }
+        
+        const doc = new jsPDF();
+        
+        // Set document properties
+        doc.setProperties({
+          title: 'Lista de Clientes',
+          subject: 'Información de clientes',
+          author: 'Panel de Administración',
+          keywords: 'clientes, lista, pdf',
+          creator: 'Panel de Administración'
+        });
+        
+        // Add header
+        doc.setFontSize(22);
+        doc.setTextColor(245, 166, 35); // Orange color
+        doc.text('LISTA DE CLIENTES', 105, 20, { align: 'center' });
+        
+        // Add date
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Generado: ${new Date().toLocaleString('es-ES')}`, 105, 28, { align: 'center' });
+        
+        // Add stats
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Total: ${clients.length} clientes`, 20, 40);
+        
+        // Group by city
+        const cities = {};
+        clients.forEach(c => {
+          if (c.ciudad) {
+            cities[c.ciudad] = (cities[c.ciudad] || 0) + 1;
+          }
+        });
+        
+        let yPos = 48;
+        for (const [city, count] of Object.entries(cities)) {
+          doc.text(`${city}: ${count}`, 20, yPos);
+          yPos += 8;
+          
+          // Limit to 5 cities to avoid overflow
+          if (yPos > 70) break;
+        }
+        
+        // Add table header
+        yPos = Math.max(yPos + 10, 70);
+        doc.setFillColor(245, 166, 35); // Orange RGB
+        doc.rect(20, yPos, 170, 10, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.text('ID', 25, yPos + 7);
+        doc.text('Nombre', 45, yPos + 7);
+        doc.text('Username', 110, yPos + 7);
+        doc.text('Ciudad', 145, yPos + 7);
+        doc.text('Registro', 175, yPos + 7);
+        
+        // Add table rows
+        yPos += 10;
+        doc.setTextColor(0, 0, 0);
+        
+        let pageCount = 1;
+        
+        for (let i = 0; i < clients.length; i++) {
+          const client = clients[i];
+          
+          // Check if we need a new page
+          if (yPos > 270) {
+            doc.addPage();
+            pageCount++;
+            
+            // Add header to new page
+            doc.setFontSize(14);
+            doc.setTextColor(245, 166, 35);
+            doc.text(`LISTA DE CLIENTES (Página ${pageCount})`, 105, 20, { align: 'center' });
+            
+            // Add table header to new page
+            yPos = 30;
+            doc.setFillColor(245, 166, 35); // Orange RGB
+            doc.rect(20, yPos, 170, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text('ID', 25, yPos + 7);
+            doc.text('Nombre', 45, yPos + 7);
+            doc.text('Username', 110, yPos + 7);
+            doc.text('Ciudad', 145, yPos + 7);
+            doc.text('Registro', 175, yPos + 7);
+            
+            yPos += 10;
+            doc.setTextColor(0, 0, 0);
+          }
+          
+          // Add row background (alternating)
+          if (i % 2 === 0) {
+            doc.setFillColor(240, 240, 240); // Light gray RGB
+            doc.rect(20, yPos, 170, 8, 'F');
+          }
+          
+          // Add row data
+          doc.setFontSize(10);
+          doc.text(client.id.toString(), 25, yPos + 5);
+          doc.text(client.nombre_completo.substring(0, 30), 45, yPos + 5);
+          doc.text(client.username, 110, yPos + 5);
+          doc.text(client.ciudad.substring(0, 15), 145, yPos + 5);
+          doc.text(new Date(client.fecha_registro).toLocaleDateString('es-ES'), 175, yPos + 5);
+          
+          yPos += 8;
+        }
+        
+        // Add footer
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Página ${pageCount} de ${pageCount}`, 105, 280, { align: 'center' });
+        doc.text('Panel de Administración', 105, 285, { align: 'center' });
+        
+        // Save the PDF
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        
+        // Store current PDF for download
+        currentPDF = {
+          blob: pdfBlob,
+          filename: `lista_clientes_${new Date().toISOString().split('T')[0]}.pdf`
+        };
+        
+        // Show preview
+        document.getElementById('pdfPreview').src = pdfUrl;
+        new bootstrap.Modal(document.getElementById('pdfPreviewModal')).show();
+        
+        // Setup download button
+        document.getElementById('downloadPDFBtn').onclick = downloadCurrentPDF;
+        
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        showToast(`Error al generar PDF: ${error.message}`, 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function downloadCurrentPDF() {
+      if (currentPDF) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(currentPDF.blob);
+        link.download = currentPDF.filename;
+        link.click();
+      }
+    }
+
+    // Tab switching
+    function changeTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active', 'show');
+      });
+      document.getElementById(tabId).classList.add('active', 'show');
+      
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Load data for specific tabs if needed
+      if (tabId === 'portfolios' && portfoliosData.length === 0) {
+        fetchPortfolios();
+      }
+    }
+
+    // Form submissions
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const userId = document.getElementById('selectedUserId').value;
+      const userName = document.getElementById('selectedUserName').value;
+      
+      if (newPassword !== confirmPassword) {
+        showToast('Las contraseñas no coinciden', 'error');
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        showToast('La contraseña debe tener al menos 6 caracteres', 'error');
+        return;
+      }
+      
+      // Here you would make an API call to change the password
+      showToast(`Contraseña cambiada correctamente para ${userName}`, 'success');
+      bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+    });
+
+    document.getElementById('uploadPhotoForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const userId = document.getElementById('photoUserId').value;
+      const userName = document.getElementById('photoUserName').value;
+      const photoFile = document.getElementById('photoFile').files[0];
+      
+      if (!photoFile) {
+        showToast('Debes seleccionar una imagen', 'error');
+        return;
+      }
+      
+      // Check file size (max 5MB)
+      if (photoFile.size > 5 * 1024 * 1024) {
+        showToast('La imagen es demasiado grande. El tamaño máximo es 5MB', 'error');
+        return;
+      }
+      
+      // Check file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!allowedTypes.includes(photoFile.type)) {
+        showToast('Formato de archivo no permitido. Usa JPG, JPEG o PNG', 'error');
+        return;
+      }
+      
+      const result = await uploadUserPhoto(userId, photoFile);
+      
+      if (result) {
+        showToast(`Foto actualizada correctamente para ${userName}`, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('uploadPhotoModal')).hide();
+      }
+    });
+
+    // Photo preview
+    document.getElementById('photoFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('photoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Search functionality
+    document.getElementById('searchUsers').addEventListener('input', searchUsers);
+    document.getElementById('searchPortfolios')?.addEventListener('input', searchPortfolios);
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Initializing admin panel...');
+      fetchUsers();
+      fetchProfessionals();
+    });
+
+    // Refresh data every 5 minutes
+    setInterval(() => {
+      console.log('Auto-refreshing data...');
+      fetchUsers();
+      fetchProfessionals();
+      if (document.getElementById('portfolios').classList.contains('active')) {
+        fetchPortfolios();
+      }
+    }, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

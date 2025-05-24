@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WildInk</title>
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body, html {
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      height: 100%;
+    }
+
+    /* 🧭 Barra de navegación */
+    nav {
+      background-color: #1c1c1c;
+      color: white;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav .logo {
+      font-family: cursive;
+      color: #ffc107;
+      font-size: 1.4rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-btn {
+      background-color: #ffc107;
+      color: #1c1c1c;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+    }
+
+    .login-btn:hover {
+      background-color: #e0a800;
+    }
+
+    /* 🖼️ Hero principal */
+    .hero {
+      background: url('https://www.malatintamagazine.com/wp-content/uploads/2020/03/Tinta-al-Alma-portada.jpg') no-repeat center center/cover;
+      height: 100vh;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    .hero .fondo-gris {
+      background: rgba(33, 33, 33, 0.7);
+      padding: 40px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: auto;
+    }
+
+    .hero .subtitulo {
+      font-style: italic;
+      color: #cccccc;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero .btn {
+      background-color: #ffc107;
+      color: black;
+      padding: 15px 25px;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .hero .btn:hover {
+      background-color: #e0a800;
+    }
+
+    /* 🔻 Sección: Quiénes somos */
+    #quienes-somos {
+      background: #f5f5f5 url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+      color: #1c1c1c;
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    #quienes-somos .contenido {
+      max-width: 700px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    #quienes-somos h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #e07b00;
+    }
+
+    #quienes-somos p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* 🎨 Sección: Servicios */
+    #servicios {
+      background: #f5f5f5 url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+      padding: 100px 20px;
+    }
+
+    .tarjetas-servicios {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tarjeta {
+      background-color: #ffc107;
+      border-radius: 15px;
+      width: 250px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      padding-bottom: 20px;
+    }
+
+    .tarjeta .img-container {
+      width: 100%;
+      height: 150px;
+      background-color: #ddd; /* Cambia esto por tu imagen */
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .tarjeta h3 {
+      text-align: center;
+      margin: 15px 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .tarjeta .descripcion {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      padding: 0 15px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-10px);
+    }
+
+    .tarjeta:hover .descripcion {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    /* Color del título de la sección */
+    h2 {
+      text-align: center;
+      color: #e07b00;
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🧭 Barra superior -->
+  <nav>
+    <div class="logo">WildInk</div>
+    <ul>
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#quienes-somos">Quiénes somos</a></li>
+      <li><a href="#servicios">Servicios</a></li> 
+      <li><a href="#">Dónde nos encontramos</a></li>
+      <li><a href="#">Comunidad</a></li>
+    </ul>
+    <a class="login-btn" href="login.html">Iniciar sesión</a>
+  </nav>
+
+  <!-- 🖼️ Sección principal -->
+  <div class="hero">
+    <div class="fondo-gris">
+      <p class="subtitulo">Conoce el espacio único para profesionales de la estética personal</p>
+      <h1>Bienvenido a WildInk</h1>
+      <a href="#quienes-somos" class="btn">Conóceme</a>
+    </div>
+  </div>
+
+  <!-- 🧾 Sección: Quiénes somos -->
+  <section id="quienes-somos">
+    <div class="contenido">
+      <h2>¿Quiénes somos?</h2>
+      <p>
+        Somos un colectivo de artistas de la estética personal enfocados en impulsar talentos como tatuadores, estilistas, barberos y perforadores.  
+        WildInk nace para dar visibilidad, comunidad y conexión a quienes hacen arte con su pasión.
+      </p>
+    </div>
+  </section>
+
+  <!-- 🎨 Sección: Servicios -->
+  <section id="servicios">
+    <h2>Servicios</h2>
+    <div class="tarjetas-servicios">
+      <div class="tarjeta">
+        <div class="https://www.avantgardetattoo.es/wp-content/uploads/2021/09/Ventajas-y-desventajas-de-los-tatuajes-en-negro-y-a-color.jpg"><!-- Imagen aquí --></div>
+        <h3>Tatuería</h3>
+        <p class="descripcion">Arte corporal con tinta, técnicas personalizadas y estilo único para cada cliente.</p>
+      </div>
+      <div class="tarjeta">
+        <div class="https://haircutday.com/b/wp-content/uploads/2024/01/Diseno-sin-titulo37-300x300.png"><!-- Imagen aquí --></div>
+        <h3>Barbería</h3>
+        <p class="descripcion">Cortes de cabello y barba modernos y clásicos, adaptados a tu estilo personal.</p>
+      </div>
+      <div class="tarjeta">
+        <div class="https://lh3.googleusercontent.com/proxy/yxSn8ySegBW8mEIv7VctA4PJXF3OCGQvln82GkpqHlZJ5iup-BFvUtqYCp7PEnke1h8ZZRMMAabeU71i1odGy7GJce_u1SZs1q-cj1SsRCyZBu62x_Agg33QZKNE8qc"><!-- Imagen aquí --></div>
+        <h3>Estilismo</h3>
+        <p class="descripcion">Transformaciones de cabello, color, diseño y asesoría de imagen integral.</p>
+      </div>
+      <div class="tarjeta">
+        <div class="https://img.freepik.com/fotos-premium/mujer-joven-haciendo-piercing-salon-belleza_183314-11977.jpg"><!-- Imagen aquí --></div>
+        <h3>Perforadores</h3>
+        <p class="descripcion">Piercings seguros y profesionales con diseño y técnica especializada.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="donde-nos-encontramos">
+    <h2 class="titulo-donde-nos-encontramos">¿Dónde nos encontramos?</h2>
+    <div class="burbujas-container">
+      <div class="burbuja" data-info="No somos uno, somos todos. Estamos donde tú estés."></div>
+      <div class="burbuja" data-info="Busca la ubicación de tu profesional preferido, donde sea."></div>
+      <div class="burbuja" data-info="Da pie a tus ideas y descubre quién está cerca para hacerlas realidad."></div>
+      <div class="burbuja" data-info="Puedes ser también parte de nosotros y unirte a esta familia que está en todas partes."></div>
+    </div>
+  </section>
+  
+
+</body>
+</html>

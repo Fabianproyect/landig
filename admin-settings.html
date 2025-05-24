@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuración del Sistema - Panel de Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+ <style>
+  * {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+ body {
+  background: 
+    linear-gradient(rgba(31,31,31,0.8), rgba(31,31,31,0.8)),
+    url('https://uni.edu.gt/wp-content/uploads/sites/19/2024/04/Administracion-de-Empresas-Concepto-y-Funciones3.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #f0f0f0;
+}
+
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #2c2c2c;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 15px;
+  }
+
+  .nav-buttons button {
+    background-color: #f5a623;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: #1f1f1f;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-buttons button svg {
+    margin-right: 8px;
+  }
+
+  .nav-buttons button:hover {
+    background-color: #e59400;
+  }
+
+  .profile-button {
+    background-color: #f0f0f0;
+    color: #1f1f1f;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .profile-button svg {
+    margin-right: 8px;
+  }
+
+  .profile-button:hover {
+    background-color: #e0e0e0;
+  }
+
+  .notification-button {
+    background: none;
+    border: none;
+    color: #f0f0f0;
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px;
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4d4d;
+    color: white;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .logout-button svg {
+    margin-right: 8px;
+  }
+
+  .logout-button:hover {
+    background-color: #ff3333;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f5a623;
+    margin-bottom: 20px;
+  }
+
+  .tabs {
+    display: flex;
+    margin-bottom: 20px;
+    background-color: #2e2e2e;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .tab.active {
+    background-color: #f5a623;
+    color: #1f1f1f;
+    font-weight: bold;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 20px;
+  }
+
+  .settings-card {
+    background-color: rgba(46, 46, 46, 0.6);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+
+  .settings-card h3 {
+    color: #f5a623;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .settings-card p {
+    color: #b0b0b0;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+  }
+
+  .form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .switch-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .switch-container div {
+    flex: 1;
+  }
+
+  .switch-container p:first-child {
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  .switch-container p:last-child {
+    font-size: 12px;
+    color: #b0b0b0;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #3a3a3a;
+    transition: .4s;
+    border-radius: 24px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #f0f0f0;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #f5a623;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+  .form-submit {
+    background-color: #f5a623;
+    color: #1f1f1f;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-submit svg {
+    margin-right: 8px;
+  }
+
+  .form-submit:hover {
+    background-color: #e59400;
+  }
+
+  .secondary-button {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .secondary-button:hover {
+    background-color: #4a4a4a;
+  }
+
+  @media (max-width: 768px) {
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    header {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <header>
+    <div class="nav-buttons">
+      <button>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 7h-7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
+          <path d="M14 2v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7Z"/>
+        </svg>
+        Panel de Administración
+      </button>
+    </div>
+    <div style="display: flex; align-items: center;">
+      <button class="notification-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+        <span class="notification-badge">3</span>
+      </button>
+      <button class="profile-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Admin
+      </button>
+      <button class="logout-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Configuración del Sistema</h1>
+
+    <div class="tabs">
+      <div class="tab active" onclick="changeTab('general')">General</div>
+      <div class="tab" onclick="changeTab('security')">Seguridad</div>
+      <div class="tab" onclick="changeTab('notifications')">Notificaciones</div>
+      <div class="tab" onclick="changeTab('backups')">Respaldos</div>
+    </div>
+
+    <!-- Tab Content: General -->
+    <div id="general" class="tab-content active">
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Información de la Plataforma</h3>
+          <p>Configura la información básica de la plataforma</p>
+          <form id="platformForm">
+            <div class="form-group">
+              <label for="platform-name">Nombre de la Plataforma</label>
+              <input type="text" id="platform-name" value="Red Social Profesional">
+            </div>
+            <div class="form-group">
+              <label for="platform-description">Descripción</label>
+              <textarea id="platform-description">Conectando profesionales con clientes</textarea>
+            </div>
+            <div class="form-group">
+              <label for="contact-email">Email de Contacto</label>
+              <input type="email" id="contact-email" value="admin@ejemplo.com">
+            </div>
+            <button type="submit" class="form-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+
+        <div class="settings-card">
+          <h3>Configuración de Acceso</h3>
+          <p>Gestiona el acceso a la plataforma</p>
+          <form id="accessForm">
+            <div class="switch-container">
+              <div>
+                <p>Registro Abierto</p>
+                <p>Permitir que nuevos usuarios se registren</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Aprobación Manual</p>
+                <p>Requerir aprobación para nuevos profesionales</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Modo Mantenimiento</p>
+                <p>Activar modo de mantenimiento</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="max-login-attempts">Intentos Máximos de Inicio de Sesión</label>
+              <input type="number" id="max-login-attempts" value="5">
+            </div>
+            <button type="submit" class="form-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Content: Seguridad -->
+    <div id="security" class="tab-content">
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Política de Contraseñas</h3>
+          <p>Configura los requisitos de seguridad para contraseñas</p>
+          <form id="passwordPolicyForm">
+            <div class="form-group">
+              <label for="min-password-length">Longitud Mínima</label>
+              <input type="number" id="min-password-length" value="8">
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Requerir Mayúsculas</p>
+                <p>Al menos una letra mayúscula</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Requerir Números</p>
+                <p>Al menos un número</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Requerir Caracteres Especiales</p>
+                <p>Al menos un carácter especial</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="password-expiry">Caducidad de Contraseña (días)</label>
+              <input type="number" id="password-expiry" value="90">
+            </div>
+            <button type="submit" class="form-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+
+        <div class="settings-card">
+          <h3>Autenticación de Dos Factores</h3>
+          <p>Configura la autenticación de dos factores</p>
+          <form id="twoFactorForm">
+            <div class="switch-container">
+              <div>
+                <p>Activar 2FA para Administradores</p>
+                <p>Obligatorio para cuentas de administrador</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Activar 2FA para Profesionales</p>
+                <p>Opcional para cuentas profesionales</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="switch-container">
+              <div>
+                <p>Activar 2FA para Clientes</p>
+                <p>Opcional para cuentas de clientes</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="2fa-method">Método Preferido</label>
+              <select id="2fa-method">
+                <option value="app" selected>Aplicación Autenticadora</option>
+                <option value="sms">SMS</option>
+                <option value="email">Email</option>
+              </select>
+            </div>
+            <button type="submit" class="form-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Content: Notificaciones -->
+    <div id="notifications" class="tab-content">
+      <div class="settings-card">
+        <h3>Configuración de Notificaciones</h3>
+        <p>Gestiona las notificaciones del sistema</p>
+        <form id="notificationsForm">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <h4 style="color: #f5a623; margin-bottom: 10px;">Notificaciones de Administración</h4>
+              <div class="switch-container">
+                <p>Nuevos registros de usuarios</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="switch-container">
+                <p>Reportes de contenido</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="switch-container">
+                <p>Intentos de acceso fallidos</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="switch-container">
+                <p>Cambios en configuración</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <h4 style="color: #f5a623; margin-bottom: 10px;">Notificaciones de Sistema</h4>
+              <div class="switch-container">
+                <p>Respaldos automáticos</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="switch-container">
+                <p>Actualizaciones del sistema</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="switch-container">
+                <p>Alertas de rendimiento</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="switch-container">
+                <p>Errores críticos</p>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 20px;">
+            <label for="notification-email">Email para Notificaciones</label>
+            <input type="email" id="notification-email" value="admin@ejemplo.com">
+          </div>
+          <button type="submit" class="form-submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Guardar Cambios
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab Content: Respaldos -->
+    <div id="backups" class="tab-content">
+      <div class="settings-card">
+        <h3>Configuración de Respaldos</h3>
+        <p>Gestiona los respaldos automáticos del sistema</p>
+        <form id="backupsForm">
+          <div class="switch-container">
+            <div>
+              <p>Respaldos Automáticos</p>
+              <p>Activar respaldos automáticos</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="backup-frequency">Frecuencia de Respaldo</label>
+            <select id="backup-frequency">
+              <option value="daily">Diario</option>
+              <option value="weekly" selected>Semanal</option>
+              <option value="monthly">Mensual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="backup-retention">Retención de Respaldos (días)</label>
+            <input type="number" id="backup-retention" value="30">
+          </div>
+          <div class="form-group">
+            <label for="backup-location">Ubicación de Respaldos</label>
+            <input type="text" id="backup-location" value="/var/backups/redsocial">
+          </div>
+          <button type="submit" class="form-submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Guardar Configuración
+          </button>
+          <button type="button" class="secondary-button" style="margin-top: 10px;">
+            Crear Respaldo Manual
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Función para cambiar entre pestañas
+    function changeTab(tabId) {
+      // Ocultar todos los contenidos de pestañas
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Desactivar todas las pestañas
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Activar la pestaña seleccionada
+      document.getElementById(tabId).classList.add('active');
+      
+      // Activar el botón de la pestaña
+      document.querySelectorAll('.tab').forEach((tab, index) => {
+        if (index === Array.from(document.querySelectorAll('.tab')).findIndex(t => t.textContent.toLowerCase().includes(tabId))) {
+          tab.classList.add('active');
+        }
+      });
+    }
+
+    // Manejar envío de formularios
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Configuración guardada correctamente');
+      });
+    });
+
+    // Botón de respaldo manual
+    document.querySelector('.secondary-button').addEventListener('click', function() {
+      alert('Respaldo manual iniciado. Recibirá una notificación cuando se complete.');
+    });
+  </script>
+</body>
+</html>
