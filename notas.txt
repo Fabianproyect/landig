@@ -1,4 +1,133 @@
-fabian292@hotmail.com
+# API Integration Guide for Professional Portal - MizapTech
 
+## Base URL: https://site.mizaptech.site/api
 
-{"isAuthenticated":true,"user":{"activo":true,"actualizado_en":"2025-05-23T18:51:49","calificacion_promedio":0,"ciudad":"123123","creado_en":"2025-05-19T18:12:30","descripcion":null,"edad":123,"email":"12312313@ajwikdbawd.com","especialidad":"tatuador","experiencia":null,"fecha_registro":"2025-05-19T18:12:30","foto_perfil":null,"genero":"masculino","id":13,"is_admin":false,"nombre_completo":"OIPNWdionwaiodnawd","telefono":"123123123123","tipo":"profesional","ultimo_login":"2025-05-23T18:51:49","username":"OIPNWdionwaiodnawd"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODA0NDMwOSwianRpIjoiZmIxMjQ3ZDYtYTA5ZC00Njc4LTgzMWYtZmVlYzk2MTlmMGI1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJpZGVudGl0eSI6IjEzIiwiaXNfYWRtaW4iOmZhbHNlLCJ0aXBvIjoicHJvZmVzaW9uYWwiLCJ1c2VybmFtZSI6Ik9JUE5XZGlvbndhaW9kbmF3ZCIsImVtYWlsIjoiMTIzMTIzMTNAYWp3aWtkYmF3ZC5jb20ifSwibmJmIjoxNzQ4MDQ0MzA5LCJleHAiOjE3NDgwNDc5MDl9.5W55mwUEz6NtFEiT442_5xo2asVY05NWqb-F47n8a7o","refresh_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODA0NDMwOSwianRpIjoiYTQ1YzFhNGMtYTUxZC00ZGVlLWJmNGMtYzY1ZmU0M2I4NTJiIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOnsiaWRlbnRpdHkiOiIxMyIsImlzX2FkbWluIjpmYWxzZSwidGlwbyI6InByb2Zlc2lvbmFsIiwidXNlcm5hbWUiOiJPSVBOV2Rpb253YWlvZG5hd2QiLCJlbWFpbCI6IjEyMzEyMzEzQGFqd2lrZGJhd2QuY29tIn0sIm5iZiI6MTc0ODA0NDMwOSwiZXhwIjoxNzUwNjM2MzA5fQ.VkMkWTZQ2JeVzMH_D-bUCgq_taiZ4CJCDLwkDNaAtws"}
+## Authentication
+- Store JWT token in localStorage after login
+- Include token in Authorization header for protected endpoints: "Bearer <token>"
+
+## User Endpoints (for profile management)
+
+1. GET /users/profesionales
+- Purpose: Get list of all professionals (for client selection)
+- Used in: 
+  - "Añadir Trabajo" modal (client dropdown)
+  - Professional directory view
+- Response format: Array of professional objects with details
+
+2. GET /users/<usuario_id>
+- Purpose: Get specific user details
+- Used in: 
+  - Profile modal (pre-fill form)
+  - Displaying client details
+- Response: User object with public details
+
+3. PUT /users/<usuario_id>
+- Purpose: Update professional profile
+- Used in: Profile modal submit
+- Required fields: nombre_completo, especialidad, descripcion, ciudad, telefono
+
+4. POST /users/<usuario_id>/upload-photo
+- Purpose: Upload profile photo
+- Used in: Profile photo update
+- Content-Type: multipart/form-data
+- File field: 'foto'
+
+## Work (Citas) Endpoints
+
+1. GET /trabajos/usuario/<usuario_id>
+- Purpose: Get all appointments for current professional
+- Used in: "Citas" tab to display upcoming appointments
+- Filter: estado != 'eliminado'
+- Returns: Array of appointment objects
+
+2. POST /trabajos/
+- Purpose: Create new appointment
+- Used in: "Añadir Trabajo" modal submit
+- Required fields:
+  - titulo: Work title
+  - descripcion: Work description
+  - cliente_id: Client ID (from dropdown)
+  - profesional_id: Current user ID
+- Returns: Created appointment object
+
+3. PUT /trabajos/<trabajo_id>
+- Purpose: Update appointment status/details
+- Used in:
+  - "Confirmar" button in appointments
+  - Marking appointments as completed
+- Updateable fields: estado, calificacion, comentario_profesional
+
+4. GET /trabajos/profesional/<profesional_id>
+- Purpose: Get professional's portfolio works
+- Used in: "Mi Portafolio" tab
+- Returns: Array of work objects with client details
+
+## Integration with Provided HTML View
+
+### 1. Initial Load
+- On DOMContentLoaded:
+  - Verify auth token exists
+  - GET /users/<current_user_id> to load profile data
+  - GET /trabajos/profesional/<current_user_id> for portfolio
+  - GET /trabajos/usuario/<current_user_id> for appointments
+  - GET /users/profesionales for client dropdown
+
+### 2. Profile Modal
+- On open: Pre-fill form with current user data
+- On submit: PUT /users/<current_user_id> with form data
+- Photo upload: POST /users/<current_user_id>/upload-photo
+
+### 3. Appointments Tab
+- Display data from GET /trabajos/usuario/<current_user_id>
+- "Confirmar" button: PUT /trabajos/<cita_id> with {estado: 'confirmada'}
+
+### 4. Add Work Modal
+- Client dropdown: Populated from GET /users/profesionales
+- On submit: POST /trabajos/ with form data
+
+### 5. Portfolio Tab
+- Display data from GET /trabajos/profesional/<current_user_id>
+- Filter by estado='completado' for finished works
+
+### 6. PDF Generation
+- Use same data as Appointments tab (GET /trabajos/usuario/<current_user_id>)
+- Format as PDF using jsPDF
+
+## Sample API Calls
+
+// Get professional's appointments
+fetch(`${API_BASE_URL}/trabajos/usuario/${currentUser.id}`, {
+  headers: {
+    'Authorization': `Bearer ${authToken}`
+  }
+})
+
+// Create new appointment
+fetch(`${API_BASE_URL}/trabajos/`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
+  },
+  body: JSON.stringify({
+    titulo: 'Nuevo tatuaje',
+    descripcion: 'Diseño de manga completa',
+    cliente_id: selectedClientId,
+    profesional_id: currentUser.id
+  })
+})
+
+// Update profile
+fetch(`${API_BASE_URL}/users/${currentUser.id}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
+  },
+  body: JSON.stringify({
+    nombre_completo: 'Nuevo Nombre',
+    especialidad: 'tatuador',
+    descripcion: 'Nueva biografía...'
+  })
+})

@@ -1,905 +1,1287 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Red Social - Portal de Profesionales</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <style>
-    :root {
-      --primary: #f5a623;
-      --primary-dark: #e59400;
-      --success: #4CAF50;
-      --success-dark: #45a049;
-      --danger: #ff4d4d;
-      --danger-dark: #ff3333;
-      --pdf-color: #4361ee;
-      --pdf-color-dark: #3a56d4;
-      --dark-bg: rgba(44, 44, 44, 0.9);
-      --card-bg: rgba(46, 46, 46, 0.85);
-      --input-bg: rgba(58, 58, 58, 0.9);
-      --border-color: #3a3a3a;
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: url(https://media.istockphoto.com/id/1144182437/es/vector/patr%C3%B3n-sin-costuras-con-cr%C3%A1neos-micr%C3%B3fonos-y-rosas.jpg?s=612x612&w=0&k=20&c=2NOfCOfG9YtPDnG0g6SW97ixHPLxkrwk0NADaTR_aMI=) no-repeat center center fixed;
-      background-size: cover;
-      color: #f0f0f0;
-    }
-    
-    .header {
-      background-color: var(--dark-bg);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    }
-    
-    .btn-primary {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: #1f1f1f;
-    }
-    
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-      border-color: var(--primary-dark);
-      color: #1f1f1f;
-    }
-    
-    .btn-success {
-      background-color: var(--success);
-      border-color: var(--success);
-    }
-    
-    .btn-success:hover {
-      background-color: var(--success-dark);
-      border-color: var(--success-dark);
-    }
-    
-    .btn-danger {
-      background-color: var(--danger);
-      border-color: var(--danger);
-    }
-    
-    .btn-danger:hover {
-      background-color: var(--danger-dark);
-      border-color: var(--danger-dark);
-    }
-    
-    .btn-pdf {
-      background-color: var(--pdf-color);
-      border-color: var(--pdf-color);
-      color: white;
-    }
-    
-    .btn-pdf:hover {
-      background-color: var(--pdf-color-dark);
-      border-color: var(--pdf-color-dark);
-      color: white;
-    }
-    
-    .btn-light {
-      background-color: #f0f0f0;
-      border-color: #f0f0f0;
-      color: #1f1f1f;
-    }
-    
-    .btn-light:hover {
-      background-color: #e0e0e0;
-      border-color: #e0e0e0;
-      color: #1f1f1f;
-    }
-    
-    .card {
-      background-color: var(--card-bg);
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    }
-    
-    .nav-tabs {
-      background-color: var(--card-bg);
-      border-radius: 15px;
-      border: none;
-      overflow: hidden;
-    }
-    
-    .nav-tabs .nav-link {
-      color: #f0f0f0;
-      border: none;
-      border-radius: 0;
-      padding: 15px;
-    }
-    
-    .nav-tabs .nav-link.active {
-      background-color: var(--primary);
-      color: #1f1f1f;
-      font-weight: bold;
-    }
-    
-    .form-control, .form-select {
-      background-color: var(--input-bg);
-      border: none;
-      color: #f0f0f0;
-      border-radius: 10px;
-    }
-    
-    .form-control:focus, .form-select:focus {
-      background-color: var(--input-bg);
-      color: #f0f0f0;
-      box-shadow: 0 0 0 0.25rem rgba(245, 166, 35, 0.25);
-    }
-    
-    .modal-content {
-      background-color: var(--card-bg);
-      color: #f0f0f0;
-      border-radius: 15px;
-    }
-    
-    .modal-header {
-      border-bottom-color: var(--border-color);
-    }
-    
-    .modal-footer {
-      border-top-color: var(--border-color);
-    }
-    
-    .section-title {
-      color: var(--primary);
-    }
-    
-    .stat-item {
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .tag {
-      background-color: var(--input-bg);
-      color: #f0f0f0;
-      padding: 4px 8px;
-      border-radius: 10px;
-      font-size: 12px;
-      display: inline-block;
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-    
-    .client-avatar {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-    
-    .portfolio-img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 10px 10px 0 0;
-    }
-    
-    .welcome-message {
-      background-color: var(--card-bg);
-      border-radius: 15px;
-      padding: 10px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Red Social - Portal de Profesionales</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<style>
+  :root {
+    --primary: #ffc107;
+    --primary-dark: #ffb300;
+    --success: #4CAF50;
+    --success-dark: #45a049;
+    --danger: #ff4d4d;
+    --danger-dark: #ff3333;
+    --pdf-color: #4361ee;
+    --pdf-color-dark: #3a56d4;
+    --dark-bg: rgba(44, 44, 44, 0.9);
+    --card-bg: rgba(46, 46, 46, 0.85);
+    --input-bg: rgba(58, 58, 58, 0.9);
+    --border-color: #3a3a3a;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #b0b0b0;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: url(https://media.istockphoto.com/id/1144182437/es/vector/patr%C3%B3n-sin-costuras-con-cr%C3%A1neos-micr%C3%B3fonos-y-rosas.jpg?s=612x612&w=0&k=20&c=2NOfCOfG9YtPDnG0g6SW97ixHPLxkrwk0NADaTR_aMI=) no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-primary);
+  }
+  
+  .header {
+    background-color: var(--dark-bg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #1f1f1f;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #1f1f1f;
+  }
+  
+  .btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+  }
+  
+  .btn-success:hover {
+    background-color: var(--success-dark);
+    border-color: var(--success-dark);
+  }
+  
+  .btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+  }
+  
+  .btn-danger:hover {
+    background-color: var(--danger-dark);
+    border-color: var(--danger-dark);
+  }
+  
+  .btn-pdf {
+    background-color: var(--pdf-color);
+    border-color: var(--pdf-color);
+    color: white;
+  }
+  
+  .btn-pdf:hover {
+    background-color: var(--pdf-color-dark);
+    border-color: var(--pdf-color-dark);
+    color: white;
+  }
+  
+  .btn-light {
+    background-color: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #1f1f1f;
+  }
+  
+  .btn-light:hover {
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+    color: #1f1f1f;
+  }
+  
+  .card {
+    background-color: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: var(--text-primary);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  }
+  
+  .nav-tabs {
+    background-color: rgba(30, 30, 30, 0.95);
+    border-radius: 15px;
+    border: none;
+    overflow: hidden;
+  }
+  
+  .nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 0;
+    padding: 15px;
+    font-weight: 500;
+  }
+  
+  .nav-tabs .nav-link.active {
+    background-color: var(--primary);
+    color: #000000;
+    font-weight: bold;
+  }
+  
+  .form-control, .form-select {
+    background-color: rgba(40, 40, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    border-radius: 10px;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    background-color: rgba(40, 40, 40, 0.95);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+    border-color: var(--primary);
+  }
+  
+  .modal-content {
+    background-color: rgba(30, 30, 30, 0.98);
+    color: var(--text-primary);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-header {
+    border-bottom-color: var(--border-color);
+  }
+  
+  .modal-footer {
+    border-top-color: var(--border-color);
+  }
+  
+  .section-title {
+    color: var(--primary);
+    font-weight: 600;
+  }
+  
+  .stat-item {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .tag {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .client-avatar {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .portfolio-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .welcome-message {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .text-muted {
+    color: var(--text-muted) !important;
+  }
+
+  .card-text {
+    color: var(--text-secondary);
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+
+  .spinner-border {
+    color: var(--primary);
+  }
+
+  .error-message {
+    color: var(--danger);
+    text-align: center;
+    padding: 20px;
+  }
+</style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header p-3 mb-4">
-    <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col-md-6 mb-3 mb-md-0">
-          <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-primary" onclick="changeTab('clients')">
-              <i class="bi bi-people me-2"></i>Clientes
-            </button>
-            <button class="btn btn-primary" onclick="changeTab('portfolio')">
-              <i class="bi bi-images me-2"></i>Mi Portafolio
-            </button>
-            <button class="btn btn-primary" onclick="changeTab('appointments')">
-              <i class="bi bi-calendar-check me-2"></i>Citas
-            </button>
-            <button class="btn btn-primary" onclick="changeTab('analytics')">
-              <i class="bi bi-bar-chart me-2"></i>Estadísticas
-            </button>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="d-flex flex-wrap gap-2 justify-content-md-end">
-            <button class="btn btn-light" onclick="openModal('profileModal')">
-              <i class="bi bi-person me-2"></i>Mi Perfil
-            </button>
-            <button class="btn btn-success" onclick="openModal('addWorkModal')">
-              <i class="bi bi-plus-circle me-2"></i>Añadir Trabajo
-            </button>
-            <button class="btn btn-pdf" onclick="generateAppointmentsPDF()">
-              <i class="bi bi-file-earmark-pdf me-2"></i>PDF Citas
-            </button>
-            <button class="btn btn-danger" onclick="logout()">
-              <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Welcome Message -->
+<!-- Header -->
+<header class="header p-3 mb-4">
   <div class="container-fluid">
-    <div class="welcome-message" id="welcomeMessage"></div>
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-primary" onclick="changeTab('clients')">
+            <i class="bi bi-people me-2"></i>Clientes
+          </button>
+          <button class="btn btn-primary" onclick="changeTab('portfolio')">
+            <i class="bi bi-images me-2"></i>Mi Portafolio
+          </button>
+          <button class="btn btn-primary" onclick="changeTab('appointments')">
+            <i class="bi bi-calendar-check me-2"></i>Citas
+          </button>
+          <button class="btn btn-primary" onclick="changeTab('analytics')">
+            <i class="bi bi-bar-chart me-2"></i>Estadísticas
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+          <button class="btn btn-light" onclick="openModal('profileModal')">
+            <i class="bi bi-person me-2"></i>Mi Perfil
+          </button>
+          <button class="btn btn-success" onclick="openModal('addWorkModal')">
+            <i class="bi bi-plus-circle me-2"></i>Añadir Trabajo
+          </button>
+          <button class="btn btn-pdf" onclick="generateAppointmentsPDF()">
+            <i class="bi bi-file-earmark-pdf me-2"></i>PDF Citas
+          </button>
+          <button class="btn btn-danger" onclick="logout()">
+            <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+</header>
 
-  <!-- Main Content -->
-  <div class="container-fluid">
-    <div class="row g-4">
-      <!-- Sidebar -->
-      <div class="col-md-3">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title section-title">Estadísticas</h5>
-            <div class="stat-item d-flex justify-content-between">
-              <span>Clientes totales</span>
-              <span>42</span>
-            </div>
-            <div class="stat-item d-flex justify-content-between">
-              <span>Citas este mes</span>
-              <span>15</span>
-            </div>
-            <div class="stat-item d-flex justify-content-between">
-              <span>Valoración media</span>
-              <span id="ratingAvg">0</span>
-            </div>
-            <div class="stat-item d-flex justify-content-between">
-              <span>Ingresos (mes)</span>
-              <span>$1,250</span>
-            </div>
+<!-- Welcome Message -->
+<div class="container-fluid">
+  <div class="welcome-message" id="welcomeMessage"></div>
+</div>
+
+<!-- Main Content -->
+<div class="container-fluid">
+  <div class="row g-4">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title section-title">Estadísticas</h5>
+          <div class="stat-item d-flex justify-content-between">
+            <span>Clientes totales</span>
+            <span id="totalClients">-</span>
+          </div>
+          <div class="stat-item d-flex justify-content-between">
+            <span>Citas este mes</span>
+            <span id="monthlyAppointments">-</span>
+          </div>
+          <div class="stat-item d-flex justify-content-between">
+            <span>Valoración media</span>
+            <span id="ratingAvg">-</span>
+          </div>
+          <div class="stat-item d-flex justify-content-between">
+            <span>Trabajos completados</span>
+            <span id="completedWorks">-</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Main Content -->
-      <div class="col-md-9">
-        <!-- Tabs -->
-        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-          <li class="nav-item flex-fill text-center" role="presentation">
-            <button class="nav-link active w-100" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients-content" type="button" role="tab">Clientes</button>
-          </li>
-          <li class="nav-item flex-fill text-center" role="presentation">
-            <button class="nav-link w-100" id="portfolio-tab" data-bs-toggle="tab" data-bs-target="#portfolio-content" type="button" role="tab">Mi Portafolio</button>
-          </li>
-          <li class="nav-item flex-fill text-center" role="presentation">
-            <button class="nav-link w-100" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments-content" type="button" role="tab">Citas</button>
-          </li>
-          <li class="nav-item flex-fill text-center" role="presentation">
-            <button class="nav-link w-100" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics-content" type="button" role="tab">Estadísticas</button>
-          </li>
-        </ul>
+    <!-- Main Content -->
+    <div class="col-md-9">
+      <!-- Tabs -->
+      <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item flex-fill text-center" role="presentation">
+          <button class="nav-link active w-100" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients-content" type="button" role="tab">Clientes</button>
+        </li>
+        <li class="nav-item flex-fill text-center" role="presentation">
+          <button class="nav-link w-100" id="portfolio-tab" data-bs-toggle="tab" data-bs-target="#portfolio-content" type="button" role="tab">Mi Portafolio</button>
+        </li>
+        <li class="nav-item flex-fill text-center" role="presentation">
+          <button class="nav-link w-100" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments-content" type="button" role="tab">Citas</button>
+        </li>
+        <li class="nav-item flex-fill text-center" role="presentation">
+          <button class="nav-link w-100" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics-content" type="button" role="tab">Estadísticas</button>
+        </li>
+      </ul>
 
-        <!-- Tab Content -->
-        <div class="tab-content">
-          <!-- Clients Tab -->
-          <div class="tab-pane fade show active" id="clients-content" role="tabpanel">
-            <h4 class="section-title mb-4">Mis Clientes</h4>
-            <div class="row g-4" id="clientsGrid">
-              <!-- Clientes se cargarán dinámicamente -->
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Clients Tab -->
+        <div class="tab-pane fade show active" id="clients-content" role="tabpanel">
+          <h4 class="section-title mb-4">Mis Clientes</h4>
+          <div class="row g-4" id="clientsGrid">
+            <div class="loading-spinner">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Portfolio Tab -->
-          <div class="tab-pane fade" id="portfolio-content" role="tabpanel">
-            <h4 class="section-title mb-4">Mi Portafolio</h4>
-            <div class="row g-4" id="portfolioGrid">
-              <!-- Trabajos se cargarán dinámicamente -->
+        <!-- Portfolio Tab -->
+        <div class="tab-pane fade" id="portfolio-content" role="tabpanel">
+          <h4 class="section-title mb-4">Mi Portafolio</h4>
+          <div class="row g-4" id="portfolioGrid">
+            <div class="loading-spinner">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Appointments Tab -->
-          <div class="tab-pane fade" id="appointments-content" role="tabpanel">
-            <h4 class="section-title mb-4">Próximas Citas</h4>
-            <div class="row g-4" id="appointmentsList">
-              <!-- Citas se cargarán dinámicamente -->
+        <!-- Appointments Tab -->
+        <div class="tab-pane fade" id="appointments-content" role="tabpanel">
+          <h4 class="section-title mb-4">Próximas Citas</h4>
+          <div class="row g-4" id="appointmentsList">
+            <div class="loading-spinner">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Analytics Tab -->
-          <div class="tab-pane fade" id="analytics-content" role="tabpanel">
-            <h4 class="section-title mb-4">Estadísticas y Análisis</h4>
-            <div class="row g-4" id="analyticsContent">
-              <!-- Estadísticas se cargarán dinámicamente -->
+        <!-- Analytics Tab -->
+        <div class="tab-pane fade" id="analytics-content" role="tabpanel">
+          <h4 class="section-title mb-4">Estadísticas y Análisis</h4>
+          <div class="row g-4" id="analyticsContent">
+            <div class="loading-spinner">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Modal para añadir trabajo -->
-  <div class="modal fade" id="addWorkModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title section-title">Añadir Nuevo Trabajo</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="addWorkForm">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="workTitle" class="form-label">Título</label>
-              <input type="text" class="form-control" id="workTitle" required>
-            </div>
-            <div class="mb-3">
-              <label for="workDescription" class="form-label">Descripción</label>
-              <textarea class="form-control" id="workDescription" rows="3" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="workClient" class="form-label">Cliente</label>
-              <select class="form-select" id="workClient" required>
-                <option value="">Seleccionar cliente</option>
-                <!-- Opciones se cargarán dinámicamente -->
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="workImage" class="form-label">Imagen (URL)</label>
-              <input type="text" class="form-control" id="workImage" placeholder="https://ejemplo.com/imagen.jpg">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar Trabajo</button>
-          </div>
-        </form>
+<!-- Modal para añadir trabajo -->
+<div class="modal fade" id="addWorkModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title section-title">Añadir Nuevo Trabajo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form id="addWorkForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="workTitle" class="form-label">Título</label>
+            <input type="text" class="form-control" id="workTitle" required>
+          </div>
+          <div class="mb-3">
+            <label for="workDescription" class="form-label">Descripción</label>
+            <textarea class="form-control" id="workDescription" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="workClient" class="form-label">Cliente</label>
+            <select class="form-select" id="workClient" required>
+              <option value="">Seleccionar cliente</option>
+              <!-- Opciones se cargarán dinámicamente -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="workImage" class="form-label">Imagen (URL)</label>
+            <input type="text" class="form-control" id="workImage" placeholder="https://ejemplo.com/imagen.jpg">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Trabajo</button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <!-- Modal para editar perfil -->
-  <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title section-title">Mi Perfil Profesional</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="profileForm">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="profileName" class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="profileName" required>
-            </div>
-            <div class="mb-3">
-              <label for="profileSpecialty" class="form-label">Especialidad</label>
-              <select class="form-select" id="profileSpecialty" required>
-                <option value="tatuador">Tatuador</option>
-                <option value="barbero">Barbero</option>
-                <option value="estilista">Estilista</option>
-                <option value="perforador">Perforador</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="profileBio" class="form-label">Biografía</label>
-              <textarea class="form-control" id="profileBio" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="profileLocation" class="form-label">Ubicación</label>
-              <input type="text" class="form-control" id="profileLocation" required>
-            </div>
-            <div class="mb-3">
-              <label for="profilePhone" class="form-label">Teléfono</label>
-              <input type="text" class="form-control" id="profilePhone">
-            </div>
-            <div class="mb-3">
-              <label for="profileEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="profileEmail" readonly>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
-          </div>
-        </form>
+<!-- Modal para editar perfil -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title section-title">Mi Perfil Profesional</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form id="profileForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="profileName" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="profileName" required>
+          </div>
+          <div class="mb-3">
+            <label for="profileSpecialty" class="form-label">Especialidad</label>
+            <select class="form-select" id="profileSpecialty" required>
+              <option value="tatuador">Tatuador</option>
+              <option value="barbero">Barbero</option>
+              <option value="estilista">Estilista</option>
+              <option value="perforador">Perforador</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="profileBio" class="form-label">Biografía</label>
+            <textarea class="form-control" id="profileBio" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="profileLocation" class="form-label">Ubicación</label>
+            <input type="text" class="form-control" id="profileLocation" required>
+          </div>
+          <div class="mb-3">
+            <label for="profilePhone" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="profilePhone">
+          </div>
+          <div class="mb-3">
+            <label for="profileEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="profileEmail" readonly>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Importamos las bibliotecas jsPDF
-    const { jsPDF } = window.jspdf;
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Importamos las bibliotecas jsPDF
+  const { jsPDF } = window.jspdf;
 
-    // Variables globales
-    let currentUser = null;
-    let authToken = null;
-    const API_BASE_URL = 'https://site.mizaptech.site/api';
+  // Variables globales
+  let currentUser = null;
+  let authToken = null;
+  const API_BASE_URL = 'https://site.mizaptech.site/api';
 
-    // Datos de ejemplo
-    const clientes = [
-      {
-        id: 1,
-        nombre: 'Carlos Rodríguez',
-        imagen: 'https://via.placeholder.com/150',
-        ultimaVisita: '15/04/2025',
-        intereses: ['Tatuajes Tribales', 'Blackwork'],
-        gastado: '$350'
-      },
-      {
-        id: 2,
-        nombre: 'María López',
-        imagen: 'https://via.placeholder.com/150',
-        ultimaVisita: '20/03/2025',
-        intereses: ['Tatuajes Minimalistas', 'Color'],
-        gastado: '$280'
-      },
-      {
-        id: 3,
-        nombre: 'Javier Martínez',
-        imagen: 'https://via.placeholder.com/150',
-        ultimaVisita: '05/04/2025',
-        intereses: ['Tatuajes Grandes', 'Japonés'],
-        gastado: '$520'
-      },
-      {
-        id: 4,
-        nombre: 'Ana Sánchez',
-        imagen: 'https://via.placeholder.com/150',
-        ultimaVisita: '10/04/2025',
-        intereses: ['Tatuajes Pequeños', 'Lettering'],
-        gastado: '$150'
-      },
-      {
-        id: 5,
-        nombre: 'Roberto Fernández',
-        imagen: 'https://via.placeholder.com/150',
-        ultimaVisita: '01/04/2025',
-        intereses: ['Tatuajes Realistas', 'Retratos'],
-        gastado: '$450'
-      },
-      {
-        id: 6,
-        nombre: 'Laura Gómez',
-        imagen: 'https://via.placeholder.com/150',
-        ultimaVisita: '25/03/2025',
-        intereses: ['Tatuajes Geométricos', 'Dotwork'],
-        gastado: '$320'
-      }
-    ];
+  // Variables para almacenar datos de la API
+  let clientes = [];
+  let trabajos = [];
+  let citas = [];
+  let profesionales = [];
 
-    const trabajos = [
-      {
-        id: 1,
-        titulo: 'Tatuaje Tribal Brazo',
-        descripcion: 'Diseño tribal personalizado para brazo completo',
-        imagen: 'https://via.placeholder.com/250x200',
-        cliente: 'Carlos Rodríguez',
-        fecha: '15/04/2025',
-        likes: 45,
-        comentarios: 8
-      },
-      {
-        id: 2,
-        titulo: 'Tatuaje Minimalista',
-        descripcion: 'Diseño minimalista de montañas en antebrazo',
-        imagen: 'https://via.placeholder.com/250x200',
-        cliente: 'María López',
-        fecha: '20/03/2025',
-        likes: 32,
-        comentarios: 5
-      },
-      {
-        id: 3,
-        titulo: 'Manga Japonesa',
-        descripcion: 'Manga completa estilo japonés tradicional',
-        imagen: 'https://via.placeholder.com/250x200',
-        cliente: 'Javier Martínez',
-        fecha: '05/04/2025',
-        likes: 67,
-        comentarios: 12
-      },
-      {
-        id: 4,
-        titulo: 'Lettering Personalizado',
-        descripcion: 'Frase personalizada en caligrafía moderna',
-        imagen: 'https://via.placeholder.com/250x200',
-        cliente: 'Ana Sánchez',
-        fecha: '10/04/2025',
-        likes: 28,
-        comentarios: 4
-      }
-    ];
-
-    const citas = [
-      {
-        id: 1,
-        cliente: 'Carlos Rodríguez',
-        fecha: '27/04/2025',
-        hora: '14:00',
-        servicio: 'Continuación manga tribal',
-        duracion: '3 horas',
-        estado: 'confirmada',
-        precio: 150
-      },
-      {
-        id: 2,
-        cliente: 'María López',
-        fecha: '03/05/2025',
-        hora: '10:00',
-        servicio: 'Nuevo tatuaje minimalista',
-        duracion: '2 horas',
-        estado: 'pendiente',
-        precio: 100
-      },
-      {
-        id: 3,
-        cliente: 'Roberto Fernández',
-        fecha: '09/05/2025',
-        hora: '16:00',
-        servicio: 'Retrato realista',
-        duracion: '4 horas',
-        estado: 'confirmada',
-        precio: 200
-      },
-      {
-        id: 4,
-        cliente: 'Ana Sánchez',
-        fecha: '12/05/2025',
-        hora: '11:30',
-        servicio: 'Lettering personalizado',
-        duracion: '1.5 horas',
-        estado: 'confirmada',
-        precio: 75
-      },
-      {
-        id: 5,
-        cliente: 'Javier Martínez',
-        fecha: '17/05/2025',
-        hora: '15:00',
-        servicio: 'Continuación manga japonesa',
-        duracion: '3 horas',
-        estado: 'pendiente',
-        precio: 150
-      }
-    ];
-
-    // Verificar autenticación al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-      // Obtener datos de autenticación del localStorage
+  // Función para inicializar la aplicación
+  async function initializeApp() {
+    try {
+      // Verificar autenticación
       const authDataStr = localStorage.getItem('auth');
       
       if (!authDataStr) {
-        // Si no hay datos de autenticación, redirigir al login
         window.location.href = 'index.html';
         return;
       }
       
-      try {
-        const authData = JSON.parse(authDataStr);
-        
-        if (!authData.isAuthenticated || !authData.token) {
-          // Si no está autenticado o no tiene token, redirigir al login
-          window.location.href = 'index.html';
-          return;
-        }
-        
-        // Guardar datos del usuario y token
-        currentUser = authData.user;
-        authToken = authData.token;
-        
-        // Verificar que el usuario es profesional
-        if (currentUser.tipo !== 'profesional') {
-          alert('Esta sección es solo para profesionales');
-          window.location.href = 'index.html';
-          return;
-        }
-        
-        // Mostrar mensaje de bienvenida
-        document.getElementById('welcomeMessage').innerHTML = `
-          <h4>Bienvenido, ${currentUser.nombre_completo}</h4>
-          <p>Especialidad: ${currentUser.especialidad || 'No especificada'}</p>
-        `;
-        
-        // Actualizar calificación promedio
-        document.getElementById('ratingAvg').textContent = 
-          currentUser.calificacion_promedio ? `${currentUser.calificacion_promedio.toFixed(1)} ★` : 'Sin calificaciones';
-        
-        // Cargar datos iniciales
-        renderClientes();
-        renderTrabajos();
-        renderCitas();
-        renderAnalytics();
-        cargarClientesSelect();
-        cargarDatosPerfil();
-      } catch (error) {
-        console.error('Error al procesar datos de autenticación:', error);
+      const authData = JSON.parse(authDataStr);
+      
+      if (!authData.isAuthenticated || !authData.token) {
         window.location.href = 'index.html';
+        return;
+      }
+      
+      currentUser = authData.user;
+      authToken = authData.token;
+      
+      if (currentUser.tipo !== 'profesional') {
+        alert('Esta sección es solo para profesionales');
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // Mostrar mensaje de bienvenida
+      document.getElementById('welcomeMessage').innerHTML = `
+        <h4>Bienvenido, ${currentUser.nombre_completo}</h4>
+        <p>Especialidad: ${currentUser.especialidad || 'No especificada'}</p>
+      `;
+      
+      // Cargar datos iniciales
+      await loadInitialData();
+      
+      // Cargar datos del perfil
+      cargarDatosPerfil();
+    } catch (error) {
+      console.error('Error al inicializar la aplicación:', error);
+      showError('Error al inicializar la aplicación');
+    }
+  }
+
+  // Función para inicializar todos los datos
+  async function loadInitialData() {
+    try {
+      // Cargar datos en paralelo
+      const [citasResult, portfolioResult] = await Promise.all([
+        loadCitas(),
+        loadPortfolio()
+      ]);
+      
+      // Procesar clientes a partir de las citas cargadas
+      await processClients();
+      
+      // Cargar profesionales para el dropdown
+      await loadProfessionals();
+      
+      // Actualizar estadísticas
+      updateStatistics();
+    } catch (error) {
+      console.error('Error al cargar datos iniciales:', error);
+      showError('Error al cargar los datos del dashboard');
+    }
+  }
+
+  // Función para cargar citas del profesional
+  async function loadCitas() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trabajos/usuario/${currentUser.id}`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Error al cargar citas');
+      
+      const responseData = await response.json();
+      
+      // Verificar la estructura de la respuesta
+      console.log('Respuesta de citas:', responseData);
+      
+      // Extraer el array de citas correctamente
+      let citasData;
+      if (responseData.data) {
+        // Si la respuesta tiene una propiedad data, usamos esa
+        citasData = responseData.data;
+      } else if (Array.isArray(responseData)) {
+        // Si la respuesta es directamente un array
+        citasData = responseData;
+      } else {
+        // Si no podemos identificar la estructura
+        throw new Error('Formato de respuesta inesperado');
+      }
+      
+      // Filtrar citas no eliminadas
+      citas = citasData.filter(cita => cita.estado !== 'eliminado');
+      renderCitas();
+      
+      return citas;
+    } catch (error) {
+      console.error('Error al cargar citas:', error);
+      showError('Error al cargar las citas', 'appointmentsList');
+      return [];
+    }
+  }
+
+  // Función para cargar portafolio del profesional
+  async function loadPortfolio() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trabajos/profesional/${currentUser.id}`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Error al cargar portafolio');
+      
+      const responseData = await response.json();
+      
+      // Verificar la estructura de la respuesta
+      console.log('Respuesta de portafolio:', responseData);
+      
+      // Extraer el array de trabajos correctamente
+      let trabajosData;
+      if (responseData.data) {
+        // Si la respuesta tiene una propiedad data, usamos esa
+        trabajosData = responseData.data;
+      } else if (Array.isArray(responseData)) {
+        // Si la respuesta es directamente un array
+        trabajosData = responseData;
+      } else {
+        // Si no podemos identificar la estructura
+        throw new Error('Formato de respuesta inesperado');
+      }
+      
+      // Filtrar trabajos completados o en progreso
+      trabajos = trabajosData.filter(trabajo => trabajo.estado !== 'eliminado');
+      renderTrabajos();
+      
+      return trabajos;
+    } catch (error) {
+      console.error('Error al cargar portafolio:', error);
+      showError('Error al cargar el portafolio', 'portfolioGrid');
+      return [];
+    }
+  }
+
+  // Función para procesar clientes a partir de las citas
+  async function processClients() {
+  try {
+    // Extraer IDs únicos de clientes de las citas
+    const clienteIds = new Set();
+    
+    citas.forEach(cita => {
+      if (cita.cliente_id) {
+        clienteIds.add(cita.cliente_id);
       }
     });
-
-    // Función para cerrar sesión
-    function logout() {
-      localStorage.removeItem('auth');
-      window.location.href = 'index.html';
+    
+    if (clienteIds.size === 0) {
+      clientes = [];
+      renderClientes();
+      return [];
     }
-
-    // Función para cambiar entre pestañas
-    function changeTab(tabId) {
-      const triggerEl = document.querySelector(`#${tabId}-tab`);
-      bootstrap.Tab.getOrCreateInstance(triggerEl).show();
-    }
-
-    // Función para renderizar clientes
-    function renderClientes() {
-      const clientesGrid = document.getElementById('clientsGrid');
-      clientesGrid.innerHTML = '';
-      
-      clientes.forEach(cliente => {
-        let interesesHTML = '';
-        cliente.intereses.forEach(interes => {
-          interesesHTML += `<span class="tag">${interes}</span>`;
+    
+    // Obtener datos completos de cada cliente
+    const clientesPromises = Array.from(clienteIds).map(async (clienteId) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/users/${clienteId}`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
         });
         
-        const clienteCard = document.createElement('div');
-        clienteCard.className = 'col-md-6 col-lg-4';
-        clienteCard.innerHTML = `
-          <div class="card h-100">
-            <div class="card-body">
-              <img src="${cliente.imagen}" alt="${cliente.nombre}" class="client-avatar">
-              <h5 class="card-title">${cliente.nombre}</h5>
-              <p class="card-text text-muted">Última visita: ${cliente.ultimaVisita}</p>
-              <p class="card-text text-muted">Total gastado: ${cliente.gastado}</p>
-              <div class="mb-3">
-                ${interesesHTML}
+        if (!response.ok) {
+          console.warn(`No se pudo obtener datos del cliente ${clienteId}`);
+          return null;
+        }
+        
+        const clienteData = await response.json();
+        console.log(`Datos del cliente ${clienteId}:`, clienteData);
+        
+        // Calcular estadísticas del cliente basadas en las citas
+        const citasCliente = citas.filter(c => c.cliente_id === clienteId);
+        const totalGastado = citasCliente.reduce((sum, cita) => sum + (cita.precio || 0), 0);
+        const ultimaVisita = citasCliente.length > 0 
+          ? new Date(Math.max(...citasCliente.map(c => new Date(c.fecha_creacion)))).toLocaleDateString('es-ES')
+          : 'Sin visitas';
+        
+        return {
+          id: clienteData.id,
+          nombre: clienteData.nombre_completo || clienteData.username || 'Cliente',
+          email: clienteData.email || '',
+          telefono: clienteData.telefono || '',
+          ciudad: clienteData.ciudad || '',
+          foto_perfil: clienteData.foto_perfil || null,
+          fecha_registro: clienteData.fecha_registro ? new Date(clienteData.fecha_registro).toLocaleDateString('es-ES') : '',
+          tipo: clienteData.tipo || 'cliente',
+          username: clienteData.username || '',
+          ultimaVisita: ultimaVisita,
+          totalTrabajos: citasCliente.length,
+          totalGastado: totalGastado,
+          citasCompletadas: citasCliente.filter(c => c.estado === 'completado').length,
+          citasPendientes: citasCliente.filter(c => c.estado === 'pendiente' || c.estado === 'confirmada').length
+        };
+      } catch (error) {
+        console.error(`Error al obtener datos del cliente ${clienteId}:`, error);
+        return null;
+      }
+    });
+    
+    // Esperar a que se resuelvan todas las promesas
+    const clientesResults = await Promise.all(clientesPromises);
+    
+    // Filtrar resultados nulos y ordenar por última visita
+    clientes = clientesResults
+      .filter(cliente => cliente !== null)
+      .sort((a, b) => new Date(b.ultimaVisita) - new Date(a.ultimaVisita));
+    
+    renderClientes();
+    return clientes;
+  } catch (error) {
+    console.error('Error al procesar clientes:', error);
+    showError('Error al cargar los clientes', 'clientsGrid');
+    return [];
+  }
+}
+
+  // Función para cargar profesionales (para dropdown de clientes)
+  async function loadProfessionals() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/profesionales`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Error al cargar profesionales');
+      
+      const responseData = await response.json();
+      
+      // Verificar la estructura de la respuesta
+      console.log('Respuesta de profesionales:', responseData);
+      
+      // Extraer el array de profesionales correctamente
+      if (responseData.data) {
+        profesionales = responseData.data;
+      } else if (Array.isArray(responseData)) {
+        profesionales = responseData;
+      } else {
+        throw new Error('Formato de respuesta inesperado');
+      }
+      
+      cargarClientesSelect();
+      return profesionales;
+    } catch (error) {
+      console.error('Error al cargar profesionales:', error);
+      return [];
+    }
+  }
+
+  // Función para actualizar estadísticas
+  function updateStatistics() {
+    // Clientes totales
+    document.getElementById('totalClients').textContent = clientes.length;
+    
+    // Citas este mes
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const citasEsteMes = citas.filter(cita => {
+      const citaDate = new Date(cita.fecha_creacion);
+      return citaDate.getMonth() === currentMonth && citaDate.getFullYear() === currentYear;
+    });
+    document.getElementById('monthlyAppointments').textContent = citasEsteMes.length;
+    
+    // Valoración media
+    const calificacion = currentUser.calificacion_promedio || 0;
+    document.getElementById('ratingAvg').textContent = calificacion ? `${calificacion.toFixed(1)} ★` : 'Sin calificaciones';
+    
+    // Trabajos completados
+    const trabajosCompletados = citas.filter(cita => cita.estado === 'completado').length;
+    document.getElementById('completedWorks').textContent = trabajosCompletados;
+    
+    renderAnalytics();
+  }
+
+  // Función para mostrar errores
+  function showError(message, containerId = null) {
+    const errorHTML = `<div class="error-message">${message}</div>`;
+    if (containerId) {
+      document.getElementById(containerId).innerHTML = errorHTML;
+    } else {
+      alert(message);
+    }
+  }
+
+  // Función para cerrar sesión
+  function logout() {
+    localStorage.removeItem('auth');
+    window.location.href = 'index.html';
+  }
+
+  // Función para cambiar entre pestañas
+  function changeTab(tabId) {
+    const triggerEl = document.querySelector(`#${tabId}-tab`);
+    bootstrap.Tab.getOrCreateInstance(triggerEl).show();
+  }
+
+  // Función para renderizar clientes
+  function renderClientes() {
+  const clientesGrid = document.getElementById('clientsGrid');
+  clientesGrid.innerHTML = '';
+  
+  if (clientes.length === 0) {
+    clientesGrid.innerHTML = '<div class="col-12"><p class="text-center text-muted">No tienes clientes registrados aún</p></div>';
+    return;
+  }
+  
+  clientes.forEach(cliente => {
+    const clienteCard = document.createElement('div');
+    clienteCard.className = 'col-md-6 col-lg-4';
+    
+    // Determinar la imagen a mostrar
+    const imagenPerfil = cliente.foto_perfil 
+      ? cliente.foto_perfil 
+      : `/placeholder.svg?height=150&width=150&text=${encodeURIComponent(cliente.nombre)}`;
+    
+    // Crear etiquetas de intereses basadas en los trabajos realizados
+    const trabajosRealizados = citas
+      .filter(c => c.cliente_id === cliente.id)
+      .map(c => c.titulo)
+      .slice(0, 3); // Mostrar solo los primeros 3
+    
+    let interesesHTML = '';
+    trabajosRealizados.forEach(trabajo => {
+      interesesHTML += `<span class="tag">${trabajo}</span>`;
+    });
+    
+    clienteCard.innerHTML = `
+      <div class="card h-100">
+        <div class="card-body">
+          <img src="${imagenPerfil}" alt="${cliente.nombre}" class="client-avatar" onerror="this.src='/placeholder.svgalt="${cliente.nombre}"
+
+class="client-avatar"
+
+onerror="this.src='/placeholder.svg?height=150&width=150&text=${encodeURIComponent(cliente.nombre)}'">
+
+          <h5 class="card-title">${cliente.nombre}</h5>
+
+          <p class="card-text text-muted"><i class="bi bi-person me-1"></i>@${cliente.username}</p>
+
+          ${cliente.ciudad ? `<p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>${cliente.ciudad}</p>` : ''}
+
+          ${cliente.email ? `<p class="card-text text-muted"><i class="bi bi-envelope me-1"></i>${cliente.email}</p>` : ''}
+
+          ${cliente.telefono ? `<p class="card-text text-muted"><i class="bi bi-phone me-1"></i>${cliente.telefono}</p>` : ''}
+
+          <p class="card-text text-muted"><i class="bi bi-calendar me-1"></i>Registro: ${cliente.fecha_registro}</p>
+
+          <p class="card-text text-muted"><i class="bi bi-clock me-1"></i>Última visita: ${cliente.ultimaVisita}</p>
+
+          <div class="row text-center mb-3">
+
+            <div class="col-4">
+
+              <strong>${cliente.totalTrabajos}</strong>
+
+              <br><small class="text-muted">Trabajos</small>
+
+            </div>
+
+            <div class="col-4">
+
+              <strong>$${cliente.totalGastado}</strong>
+
+              <br><small class="text-muted">Gastado</small>
+
+            </div>
+
+            <div class="col-4">
+
+              <strong>${cliente.citasCompletadas}</strong>
+
+              <br><small class="text-muted">Completados</small>
+
+            </div>
+
+          </div>
+
+          ${interesesHTML ? `<div class="mb-3">${interesesHTML}</div>` : ''}
+
+          ${cliente.citasPendientes > 0 ? 
+
+            `<div class="alert alert-warning py-2 mb-3">
+
+              <small><i class="bi bi-exclamation-triangle me-1"></i>${cliente.citasPendientes} cita(s) pendiente(s)</small>
+
+            </div>` : ''
+
+          }
+
+          <div class="d-flex justify-content-between">
+
+            <button class="btn btn-sm btn-primary" onclick="verHistorialCliente(${cliente.id})">
+
+              <i class="bi bi-clock-history me-1"></i>Historial
+
+            </button>
+
+            <button class="btn btn-sm btn-success" onclick="enviarMensaje(${cliente.id})">
+
+              <i class="bi bi-chat-dots me-1"></i>Mensaje
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+    clientesGrid.appendChild(clienteCard);
+
+  });
+
+}
+
+// Funciones para interactuar con clientes
+function verHistorialCliente(clienteId) {
+  const cliente = clientes.find(c => c.id === clienteId);
+  const clienteCitas = citas.filter(c => c.cliente_id === clienteId);
+  
+  if (!cliente) {
+    alert('Cliente no encontrado');
+    return;
+  }
+  
+  let historialHTML = `
+    <div class="modal fade" id="historialModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title section-title">Historial de ${cliente.nombre}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p><strong>Email:</strong> ${cliente.email || 'No especificado'}</p>
+                <p><strong>Teléfono:</strong> ${cliente.telefono || 'No especificado'}</p>
+                <p><strong>Ciudad:</strong> ${cliente.ciudad || 'No especificada'}</p>
               </div>
-              <div class="d-flex justify-content-between">
-                <button class="btn btn-sm btn-primary" onclick="verHistorialCliente(${cliente.id})">Historial</button>
-                <button class="btn btn-sm btn-success" onclick="enviarMensaje(${cliente.id})">Mensaje</button>
+              <div class="col-md-6">
+                <p><strong>Cliente desde:</strong> ${cliente.fecha_registro}</p>
+                <p><strong>Total trabajos:</strong> ${clienteCitas.length}</p>
+                <p><strong>Total gastado:</strong> $${cliente.totalGastado}</p>
               </div>
+            </div>
+            
+            <h6 class="section-title">Trabajos realizados:</h6>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Trabajo</th>
+                    <th>Estado</th>
+                    <th>Precio</th>
+                  </tr>
+                </thead>
+                <tbody>
+  `;
+  
+  clienteCitas.forEach(cita => {
+    historialHTML += `
+      <tr>
+        <td>${new Date(cita.fecha_creacion).toLocaleDateString('es-ES')}</td>
+        <td>${cita.titulo}</td>
+        <td><span class="badge bg-${cita.estado === 'completado' ? 'success' : cita.estado === 'pendiente' ? 'warning' : 'primary'}">${cita.estado}</span></td>
+        <td>$${cita.precio || 0}</td>
+      </tr>
+    `;
+  });
+  
+  historialHTML += `
+                </tbody>
+              </table>
             </div>
           </div>
-        `;
-        
-        clientesGrid.appendChild(clienteCard);
-      });
-    }
-
-    // Función para renderizar trabajos
-    function renderTrabajos() {
-      const portfolioGrid = document.getElementById('portfolioGrid');
-      portfolioGrid.innerHTML = '';
-      
-      trabajos.forEach(trabajo => {
-        const trabajoItem = document.createElement('div');
-        trabajoItem.className = 'col-md-6 col-lg-4';
-        
-        trabajoItem.innerHTML = `
-          <div class="card h-100">
-            <img src="${trabajo.imagen}" alt="${trabajo.titulo}" class="portfolio-img">
-            <div class="card-body">
-              <h5 class="card-title section-title">${trabajo.titulo}</h5>
-              <p class="card-text">${trabajo.descripcion}</p>
-              <p class="card-text text-muted">Cliente: ${trabajo.cliente}</p>
-              <p class="card-text text-muted">Fecha: ${trabajo.fecha}</p>
-              <div class="d-flex justify-content-between text-muted">
-                <span><i class="bi bi-heart-fill me-1"></i> ${trabajo.likes}</span>
-                <span><i class="bi bi-chat-fill me-1"></i> ${trabajo.comentarios}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        portfolioGrid.appendChild(trabajoItem);
-      });
-    }
-
-    // Función para renderizar citas
-    function renderCitas() {
-      const appointmentsList = document.getElementById('appointmentsList');
-      appointmentsList.innerHTML = '';
-      
-      citas.forEach(cita => {
-        const citaItem = document.createElement('div');
-        citaItem.className = 'col-md-6';
-        
-        let badgeClass = cita.estado === 'confirmada' ? 'bg-success' : 'bg-warning text-dark';
-        
-        citaItem.innerHTML = `
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">${cita.cliente}</h5>
-              <p class="card-text"><i class="bi bi-calendar me-2"></i>${cita.fecha} a las ${cita.hora}</p>
-              <p class="card-text"><i class="bi bi-brush me-2"></i>${cita.servicio}</p>
-              <p class="card-text"><i class="bi bi-clock me-2"></i>${cita.duracion}</p>
-              <p class="card-text"><i class="bi bi-currency-dollar me-2"></i>${cita.precio}</p>
-              <div class="mb-3">
-                <span class="badge ${badgeClass}">${cita.estado.toUpperCase()}</span>
-              </div>
-              <div class="d-flex justify-content-between">
-                <button class="btn btn-sm btn-primary" onclick="confirmarCita(${cita.id})">Confirmar</button>
-                <button class="btn btn-sm btn-success" onclick="enviarRecordatorio(${cita.id})">Recordatorio</button>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        appointmentsList.appendChild(citaItem);
-      });
-    }
-
-    // Función para renderizar estadísticas
-    function renderAnalytics() {
-      const analyticsContent = document.getElementById('analyticsContent');
-      
-      analyticsContent.innerHTML = `
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">Resumen de Actividad</h5>
-              <p class="card-text"><i class="bi bi-people me-2"></i>Clientes nuevos este mes: 8</p>
-              <p class="card-text"><i class="bi bi-check2-circle me-2"></i>Trabajos completados: 15</p>
-              <p class="card-text"><i class="bi bi-currency-dollar me-2"></i>Ingresos totales: $1,250</p>
-              <p class="card-text"><i class="bi bi-star-fill me-2"></i>Valoración media: ${currentUser.calificacion_promedio ? currentUser.calificacion_promedio.toFixed(1) : '0'}/5</p>
-              <p class="card-text"><i class="bi bi-calendar-check me-2"></i>Citas programadas: 5</p>
-              <p class="card-text"><i class="bi bi-graph-up me-2"></i>Tasa de conversión: 75%</p>
-            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cerrar</button>
           </div>
         </div>
-        
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">Servicios Más Populares</h5>
-              <div class="mb-3">
-                <p class="mb-1">1. Tatuajes Tribales</p>
-                <div class="progress" style="height: 20px;">
-                  <div class="progress-bar bg-primary" role="progressbar" style="width: 35%;" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">35%</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <p class="mb-1">2. Tatuajes Minimalistas</p>
-                <div class="progress" style="height: 20px;">
-                  <div class="progress-bar bg-primary" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <p class="mb-1">3. Tatuajes Realistas</p>
-                <div class="progress" style="height: 20px;">
-                  <div class="progress-bar bg-primary" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">20%</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <p class="mb-1">4. Lettering</p>
-                <div class="progress" style="height: 20px;">
-                  <div class="progress-bar bg-primary" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">15%</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <p class="mb-1">5. Otros</p>
-                <div class="progress" style="height: 20px;">
-                  <div class="progress-bar bg-primary" role="progressbar" style="width: 5%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100">5%</div>
-                </div>
-              </div>
+      </div>
+    </div>
+  `;
+  
+  // Remover modal anterior si existe
+  const existingModal = document.getElementById('historialModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+  
+  // Añadir nuevo modal al body
+  document.body.insertAdjacentHTML('beforeend', historialHTML);
+  
+  // Mostrar modal
+  const modal = new bootstrap.Modal(document.getElementById('historialModal'));
+  modal.show();
+}
+
+  // Función para renderizar trabajos
+  function renderTrabajos() {
+    const portfolioGrid = document.getElementById('portfolioGrid');
+    portfolioGrid.innerHTML = '';
+    
+    if (trabajos.length === 0) {
+      portfolioGrid.innerHTML = '<div class="col-12"><p class="text-center text-muted">No tienes trabajos en tu portafolio aún</p></div>';
+      return;
+    }
+    
+    trabajos.forEach(trabajo => {
+      const trabajoItem = document.createElement('div');
+      trabajoItem.className = 'col-md-6 col-lg-4';
+      
+      trabajoItem.innerHTML = `
+        <div class="card h-100">
+          <img src="${trabajo.imagen_url || '/placeholder.svg?height=200&width=250&text=Trabajo'}" alt="${trabajo.titulo}" class="portfolio-img">
+          <div class="card-body">
+            <h5 class="card-title section-title">${trabajo.titulo}</h5>
+            <p class="card-text">${trabajo.descripcion}</p>
+            <p class="card-text text-muted">Cliente: ${trabajo.cliente?.nombre_completo || 'Cliente'}</p>
+            <p class="card-text text-muted">Fecha: ${new Date(trabajo.fecha_creacion).toLocaleDateString('es-ES')}</p>
+            <div class="d-flex justify-content-between text-muted">
+              <span><i class="bi bi-star-fill me-1"></i> ${trabajo.calificacion || 'Sin calificar'}</span>
+              <span><i class="bi bi-currency-dollar me-1"></i> ${trabajo.precio || 'N/A'}</span>
             </div>
           </div>
         </div>
       `;
-    }
-
-    // Funciones para modales
-    function openModal(modalId) {
-      const modal = new bootstrap.Modal(document.getElementById(modalId));
-      modal.show();
-    }
-
-    // Cargar opciones de clientes en el select
-    function cargarClientesSelect() {
-      const select = document.getElementById('workClient');
       
-      clientes.forEach(cliente => {
-        const option = document.createElement('option');
-        option.value = cliente.id;
-        option.textContent = cliente.nombre;
-        select.appendChild(option);
-      });
-    }
-
-    // Cargar datos del perfil
-    function cargarDatosPerfil() {
-      if (!currentUser) return;
-      
-      document.getElementById('profileName').value = currentUser.nombre_completo || '';
-      document.getElementById('profileSpecialty').value = currentUser.especialidad || 'tatuador';
-      document.getElementById('profileBio').value = currentUser.descripcion || '';
-      document.getElementById('profileLocation').value = currentUser.ciudad || '';
-      document.getElementById('profilePhone').value = currentUser.telefono || '';
-      document.getElementById('profileEmail').value = currentUser.email || '';
-    }
-
-    // Funciones para interactuar con clientes
-    function verHistorialCliente(clienteId) {
-      alert(`Ver historial del cliente ID: ${clienteId}`);
-      // Aquí iría la lógica para mostrar el historial
-    }
-
-    function enviarMensaje(clienteId) {
-      alert(`Enviar mensaje al cliente ID: ${clienteId}`);
-      // Aquí iría la lógica para enviar mensaje
-    }
-
-    // Funciones para interactuar con citas
-    function confirmarCita(citaId) {
-      alert(`Confirmar cita ID: ${citaId}`);
-      // Aquí iría la lógica para confirmar cita
-    }
-
-    function enviarRecordatorio(citaId) {
-      alert(`Enviar recordatorio para cita ID: ${citaId}`);
-      // Aquí iría la lógica para enviar recordatorio
-    }
-
-    // Manejar envío de formularios
-    document.getElementById('addWorkForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const titulo = document.getElementById('workTitle').value;
-      const descripcion = document.getElementById('workDescription').value;
-      const clienteId = document.getElementById('workClient').value;
-      const imagen = document.getElementById('workImage').value;
-      
-      // Aquí se haría la petición a la API para guardar el trabajo
-      // Por ahora solo mostramos un mensaje
-      alert(`Trabajo "${titulo}" añadido correctamente`);
-      
-      // Cerrar modal
-      bootstrap.Modal.getInstance(document.getElementById('addWorkModal')).hide();
-      
-      // Simular añadir el trabajo a la lista
-      const nuevoTrabajo = {
-        id: trabajos.length + 1,
-        titulo: titulo,
-        descripcion: descripcion,
-        imagen: imagen || 'https://via.placeholder.com/250x200',
-        cliente: clientes.find(c => c.id == clienteId)?.nombre || 'Cliente',
-        fecha: new Date().toLocaleDateString('es-ES'),
-        likes: 0,
-        comentarios: 0
-      };
-      
-      trabajos.push(nuevoTrabajo);
-      renderTrabajos();
-      
-      // Limpiar formulario
-      document.getElementById('addWorkForm').reset();
+      portfolioGrid.appendChild(trabajoItem);
     });
+  }
 
-    document.getElementById('profileForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+  // Función para renderizar citas
+  function renderCitas() {
+    const appointmentsList = document.getElementById('appointmentsList');
+    appointmentsList.innerHTML = '';
+    
+    if (citas.length === 0) {
+      appointmentsList.innerHTML = '<div class="col-12"><p class="text-center text-muted">No tienes citas programadas</p></div>';
+      return;
+    }
+    
+    citas.forEach(cita => {
+      const citaItem = document.createElement('div');
+      citaItem.className = 'col-md-6';
       
-      if (!currentUser || !authToken) {
-        alert('Debes iniciar sesión para actualizar tu perfil');
-        return;
+      let badgeClass = '';
+      switch(cita.estado) {
+        case 'confirmada':
+          badgeClass = 'bg-success';
+          break;
+        case 'pendiente':
+          badgeClass = 'bg-warning text-dark';
+          break;
+        case 'completado':
+          badgeClass = 'bg-info';
+          break;
+        case 'cancelado':
+          badgeClass = 'bg-danger';
+          break;
+        default:
+          badgeClass = 'bg-secondary';
       }
       
-      const nombre = document.getElementById('profileName').value;
-      const especialidad = document.getElementById('profileSpecialty').value;
-      const bio = document.getElementById('profileBio').value;
-      const ubicacion = document.getElementById('profileLocation').value;
-      const telefono = document.getElementById('profilePhone').value;
+      citaItem.innerHTML = `
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">${cita.cliente?.nombre_completo || 'Cliente'}</h5>
+            <p class="card-text"><i class="bi bi-calendar me-2"></i>${new Date(cita.fecha_creacion).toLocaleDateString('es-ES')}</p>
+            <p class="card-text"><i class="bi bi-brush me-2"></i>${cita.titulo}</p>
+            <p class="card-text"><i class="bi bi-card-text me-2"></i>${cita.descripcion}</p>
+            <p class="card-text"><i class="bi bi-currency-dollar me-2"></i>$${cita.precio || 'No especificado'}</p>
+            <div class="mb-3">
+              <span class="badge ${badgeClass}">${cita.estado.toUpperCase()}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              ${cita.estado === 'pendiente' ? 
+                `<button class="btn btn-sm btn-primary" onclick="confirmarCita(${cita.id})">Confirmar</button>` : 
+                `<button class="btn btn-sm btn-secondary" disabled>Confirmada</button>`
+              }
+              <button class="btn btn-sm btn-success" onclick="enviarRecordatorio(${cita.id})">Recordatorio</button>
+            </div>
+          </div>
+        </div>
+      `;
       
-      // Crear objeto con datos actualizados
-      const datosActualizados = {
+      appointmentsList.appendChild(citaItem);
+    });
+  }
+
+  // Función para renderizar estadísticas
+  function renderAnalytics() {
+    const analyticsContent = document.getElementById('analyticsContent');
+    
+    // Calcular estadísticas
+    const trabajosCompletados = citas.filter(c => c.estado === 'completado').length;
+    const ingresosTotales = citas.reduce((sum, cita) => sum + (cita.precio || 0), 0);
+    const citasProgramadas = citas.filter(c => c.estado === 'pendiente' || c.estado === 'confirmada').length;
+    
+    analyticsContent.innerHTML = `
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Resumen de Actividad</h5>
+            <p class="card-text"><i class="bi bi-people me-2"></i>Clientes totales: ${clientes.length}</p>
+            <p class="card-text"><i class="bi bi-check2-circle me-2"></i>Trabajos completados: ${trabajosCompletados}</p>
+            <p class="card-text"><i class="bi bi-currency-dollar me-2"></i>Ingresos totales: $${ingresosTotales}</p>
+            <p class="card-text"><i class="bi bi-star-fill me-2"></i>Valoración media: ${currentUser.calificacion_promedio ? currentUser.calificacion_promedio.toFixed(1) : '0'}/5</p>
+            <p class="card-text"><i class="bi bi-calendar-check me-2"></i>Citas programadas: ${citasProgramadas}</p>
+            <p class="card-text"><i class="bi bi-graph-up me-2"></i>Total de trabajos: ${citas.length}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Estados de Trabajos</h5>
+            <div class="mb-3">
+              <p class="mb-1">Completados</p>
+              <div class="progress" style="height: 20px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: ${citas.length > 0 ? (trabajosCompletados/citas.length)*100 : 0}%;">${trabajosCompletados}</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1">Pendientes</p>
+              <div class="progress" style="height: 20px;">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: ${citas.length > 0 ? (citas.filter(c => c.estado === 'pendiente').length/citas.length)*100 : 0}%;">${citas.filter(c => c.estado === 'pendiente').length}</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1">Confirmados</p>
+              <div class="progress" style="height: 20px;">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: ${citas.length > 0 ? (citas.filter(c => c.estado === 'confirmada').length/citas.length)*100 : 0}%;">${citas.filter(c => c.estado === 'confirmada').length}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Funciones para modales
+  function openModal(modalId) {
+    const modal = new bootstrap.Modal(document.getElementById(modalId));
+    modal.show();
+  }
+
+  // Cargar opciones de clientes en el select
+  function cargarClientesSelect() {
+    const select = document.getElementById('workClient');
+    select.innerHTML = '<option value="">Seleccionar cliente</option>';
+    
+    // Usar profesionales como clientes potenciales
+    profesionales.forEach(profesional => {
+      if (profesional.tipo === 'cliente' || !profesional.tipo) {
+        const option = document.createElement('option');
+        option.value = profesional.id;
+        option.textContent = profesional.nombre_completo || profesional.username;
+        select.appendChild(option);
+      }
+    });
+  }
+
+  // Cargar datos del perfil
+  function cargarDatosPerfil() {
+    if (!currentUser) return;
+    
+    document.getElementById('profileName').value = currentUser.nombre_completo || '';
+    document.getElementById('profileSpecialty').value = currentUser.especialidad || 'tatuador';
+    document.getElementById('profileBio').value = currentUser.descripcion || '';
+    document.getElementById('profileLocation').value = currentUser.ciudad || '';
+    document.getElementById('profilePhone').value = currentUser.telefono || '';
+    document.getElementById('profileEmail').value = currentUser.email || '';
+  }
+
+
+  function enviarMensaje(clienteId) {
+    alert(`Función de mensajería en desarrollo para cliente ID: ${clienteId}`);
+  }
+
+  // Funciones para interactuar con citas
+  async function confirmarCita(citaId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trabajos/${citaId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          estado: 'confirmada'
+        })
+      });
+      
+      if (!response.ok) throw new Error('Error al confirmar cita');
+      
+      alert('Cita confirmada exitosamente');
+      await loadCitas(); // Recargar citas
+    } catch (error) {
+      console.error('Error al confirmar cita:', error);
+      alert('Error al confirmar la cita');
+    }
+  }
+
+  function enviarRecordatorio(citaId) {
+    alert(`Recordatorio enviado para cita ID: ${citaId}`);
+  }
+
+  // Manejar envío de formularios
+  document.getElementById('addWorkForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const titulo = document.getElementById('workTitle').value;
+    const descripcion = document.getElementById('workDescription').value;
+    const clienteId = document.getElementById('workClient').value;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/trabajos/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          titulo: titulo,
+          descripcion: descripcion,
+          cliente_id: parseInt(clienteId),
+          profesional_id: currentUser.id
+        })
+      });
+      
+      if (!response.ok) throw new Error('Error al crear trabajo');
+      
+      alert('Trabajo añadido correctamente');
+      bootstrap.Modal.getInstance(document.getElementById('addWorkModal')).hide();
+      document.getElementById('addWorkForm').reset();
+      
+      // Recargar datos
+      await loadCitas();
+      await loadPortfolio();
+    } catch (error) {
+      console.error('Error al crear trabajo:', error);
+      alert('Error al añadir el trabajo');
+    }
+  });
+
+  document.getElementById('profileForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!currentUser || !authToken) {
+      alert('Debes iniciar sesión para actualizar tu perfil');
+      return;
+    }
+    
+    const nombre = document.getElementById('profileName').value;
+    const especialidad = document.getElementById('profileSpecialty').value;
+    const bio = document.getElementById('profileBio').value;
+    const ubicacion = document.getElementById('profileLocation').value;
+    const telefono = document.getElementById('profilePhone').value;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${currentUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          nombre_completo: nombre,
+          especialidad: especialidad,
+          descripcion: bio,
+          ciudad: ubicacion,
+          telefono: telefono
+        })
+      });
+      
+      if (!response.ok) throw new Error('Error al actualizar perfil');
+      
+      // Actualizar datos del usuario
+      currentUser = {
+        ...currentUser,
         nombre_completo: nombre,
         especialidad: especialidad,
         descripcion: bio,
@@ -907,124 +1289,107 @@
         telefono: telefono
       };
       
-      try {
-        // Aquí se haría la petición a la API para actualizar el perfil
-        // Por ahora solo actualizamos los datos locales
-        
-        // Actualizar datos del usuario
-        currentUser = {
-          ...currentUser,
-          ...datosActualizados
-        };
-        
-        // Actualizar datos en localStorage
-        const authData = JSON.parse(localStorage.getItem('auth'));
-        authData.user = currentUser;
-        localStorage.setItem('auth', JSON.stringify(authData));
-        
-        // Actualizar mensaje de bienvenida
-        document.getElementById('welcomeMessage').innerHTML = `
-          <h4>Bienvenido, ${currentUser.nombre_completo}</h4>
-          <p>Especialidad: ${currentUser.especialidad || 'No especificada'}</p>
-        `;
-        
-        alert('Perfil actualizado correctamente');
-        
-        // Cerrar modal
-        bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
-      } catch (error) {
-        console.error('Error al actualizar perfil:', error);
-        alert('Error al actualizar perfil');
+      // Actualizar datos en localStorage
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      authData.user = currentUser;
+      localStorage.setItem('auth', JSON.stringify(authData));
+      
+      // Actualizar mensaje de bienvenida
+      document.getElementById('welcomeMessage').innerHTML = `
+        <h4>Bienvenido, ${currentUser.nombre_completo}</h4>
+        <p>Especialidad: ${currentUser.especialidad || 'No especificada'}</p>
+      `;
+      
+      alert('Perfil actualizado correctamente');
+      bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+    } catch (error) {
+      console.error('Error al actualizar perfil:', error);
+      alert('Error al actualizar perfil');
+    }
+  });
+
+  // Función para generar el PDF de citas
+  function generateAppointmentsPDF() {
+    if (citas.length === 0) {
+      alert('No tienes citas para generar el reporte');
+      return;
+    }
+    
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text('Reporte de Mis Citas', 14, 20);
+    
+    doc.setFontSize(12);
+    doc.text(`Profesional: ${currentUser.nombre_completo}`, 14, 30);
+    doc.text(`Especialidad: ${currentUser.especialidad || 'No especificada'}`, 14, 38);
+    
+    doc.setFontSize(10);
+    doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-ES')}`, 14, 46);
+    
+    const tableData = citas.map(cita => [
+      cita.id,
+      cita.cliente?.nombre_completo || 'Cliente',
+      new Date(cita.fecha_creacion).toLocaleDateString('es-ES'),
+      cita.titulo,
+      cita.descripcion.substring(0, 30) + '...',
+      cita.estado.toUpperCase(),
+      `$${cita.precio || 0}`
+    ]);
+    
+    const tableColumns = [
+      'ID', 
+      'Cliente', 
+      'Fecha', 
+      'Título', 
+      'Descripción', 
+      'Estado', 
+      'Precio'
+    ];
+    
+    doc.autoTable({
+      head: [tableColumns],
+      body: tableData,
+      startY: 55,
+      theme: 'grid',
+      styles: {
+        fontSize: 8,
+        cellPadding: 3,
+        lineColor: [200, 200, 200]
+      },
+      headStyles: {
+        fillColor: [255, 193, 7],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold'
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245]
       }
     });
+    
+    const finalY = doc.lastAutoTable.finalY || 55;
+    
+    const totalCitas = citas.length;
+    const citasConfirmadas = citas.filter(c => c.estado === 'confirmada').length;
+    const citasPendientes = citas.filter(c => c.estado === 'pendiente').length;
+    const totalIngresos = citas.reduce((sum, cita) => sum + (cita.precio || 0), 0);
+    
+    doc.setFontSize(12);
+    doc.text('Resumen:', 14, finalY + 20);
+    
+    doc.setFontSize(10);
+    doc.text(`Total de citas: ${totalCitas}`, 14, finalY + 30);
+    doc.text(`Citas confirmadas: ${citasConfirmadas}`, 14, finalY + 38);
+    doc.text(`Citas pendientes: ${citasPendientes}`, 14, finalY + 46);
+    doc.text(`Total de ingresos: $${totalIngresos}`, 14, finalY + 54);
+    
+    doc.save(`citas_${currentUser.username || 'profesional'}.pdf`);
+    
+    alert('Reporte de citas generado correctamente');
+  }
 
-    // Función para generar el PDF de citas
-    function generateAppointmentsPDF() {
-      // Crear un nuevo documento PDF
-      const doc = new jsPDF();
-      
-      // Configurar el título del documento
-      doc.setFontSize(18);
-      doc.text('Reporte de Mis Citas', 14, 20);
-      
-      // Añadir información del profesional
-      doc.setFontSize(12);
-      doc.text(`Profesional: ${currentUser.nombre_completo}`, 14, 30);
-      doc.text(`Especialidad: ${currentUser.especialidad || 'No especificada'}`, 14, 38);
-      
-      // Añadir fecha de generación
-      doc.setFontSize(10);
-      doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-ES')}`, 14, 46);
-      
-      // Preparar los datos para la tabla
-      const tableData = citas.map(cita => [
-        cita.id,
-        cita.cliente,
-        cita.fecha,
-        cita.hora,
-        cita.servicio,
-        cita.duracion,
-        cita.estado.toUpperCase(),
-        `$${cita.precio}`
-      ]);
-      
-      // Configurar las columnas de la tabla
-      const tableColumns = [
-        'ID', 
-        'Cliente', 
-        'Fecha', 
-        'Hora', 
-        'Servicio', 
-        'Duración', 
-        'Estado', 
-        'Precio'
-      ];
-      
-      // Generar la tabla en el PDF
-      doc.autoTable({
-        head: [tableColumns],
-        body: tableData,
-        startY: 55,
-        theme: 'grid',
-        styles: {
-          fontSize: 8,
-          cellPadding: 3,
-          lineColor: [200, 200, 200]
-        },
-        headStyles: {
-          fillColor: [245, 166, 35],
-          textColor: [0, 0, 0],
-          fontStyle: 'bold'
-        },
-        alternateRowStyles: {
-          fillColor: [245, 245, 245]
-        }
-      });
-      
-      // Añadir resumen al final del documento
-      const finalY = doc.lastAutoTable.finalY || 55;
-      
-      // Calcular estadísticas
-      const totalCitas = citas.length;
-      const citasConfirmadas = citas.filter(c => c.estado === 'confirmada').length;
-      const citasPendientes = citas.filter(c => c.estado === 'pendiente').length;
-      const totalIngresos = citas.reduce((sum, cita) => sum + cita.precio, 0);
-      
-      // Añadir resumen
-      doc.setFontSize(12);
-      doc.text('Resumen:', 14, finalY + 20);
-      
-      doc.setFontSize(10);
-      doc.text(`Total de citas: ${totalCitas}`, 14, finalY + 30);
-      doc.text(`Citas confirmadas: ${citasConfirmadas}`, 14, finalY + 38);
-      doc.text(`Citas pendientes: ${citasPendientes}`, 14, finalY + 46);
-      doc.text(`Total de ingresos: $${totalIngresos}`, 14, finalY + 54);
-      
-      // Guardar el PDF
-      doc.save(`citas_${currentUser.username || 'profesional'}.pdf`);
-      
-      alert('Reporte de citas generado correctamente');
-    }
-  </script>
+  // Inicializar la aplicación cuando se carga el documento
+  document.addEventListener('DOMContentLoaded', initializeApp);
+</script>
 </body>
 </html>
