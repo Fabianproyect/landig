@@ -600,10 +600,41 @@
         font-size: 12px;
         display: none;
       }
+
+      /* Estilos para pantalla de carga de autenticación */
+      .auth-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #1f1f1f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+      }
+
+      .auth-loading .loader {
+        margin-bottom: 20px;
+      }
+
+      .auth-loading .loading-text {
+        color: #f5a623;
+        font-size: 18px;
+        font-weight: 500;
+      }
     </style>
   </head>
   <body>
-    <header>
+    <!-- Pantalla de carga de autenticación -->
+    <div id="authLoading" class="auth-loading">
+      <div class="loader"></div>
+      <div class="loading-text">Verificando autenticación...</div>
+    </div>
+
+    <header style="display: none;" id="mainHeader">
       <div class="nav-buttons">
         <button onclick="filter('tatuador')">Tatuadores</button>
         <button onclick="filter('barbero')">Barberos</button>
@@ -629,7 +660,7 @@
       </div>
     </header>
 
-    <main class="feed" id="feed">
+    <main class="feed" id="feed" style="display: none;">
       <div class="welcome-message" id="welcomeMessage"></div>
       <!-- Publicaciones inyectadas dinámicamente -->
     </main>
@@ -718,15 +749,174 @@
 
       // Inicialización al cargar la página
       document.addEventListener("DOMContentLoaded", function () {
-        // Cargar datos del usuario desde localStorage
-        loadUserData();
-        
-        // Cargar profesionales desde la API
-        loadProfessionalsFromAPI();
-        
-        // Configurar el formulario de trabajo
-        setupJobForm();
+        // Verificar autenticación antes de cargar cualquier cosa
+        checkAuthentication();
       });
+
+      // Función principal para verificar autenticación
+      async function checkAuthentication() {
+        try {
+          debug("Iniciando verificación de autenticación");
+          
+          // Intentar cargar datos del usuario desde localStorage
+          const authData = await loadUserData();
+          
+          if (!authData) {
+            // Si no hay datos de autenticación, redirigir al login
+            debug("No se encontraron datos de autenticación, redirigiendo al login");
+            redirectToLogin();
+            return;
+          }
+
+          // Si hay datos de autenticación, verificar que sean válidos
+          if (!isValidAuthData(authData)) {
+            debug("Datos de autenticación inválidos, redirigiendo al login");
+            redirectToLogin();
+            return;
+          }
+
+          // Autenticación exitosa, mostrar la aplicación
+          debug("Autenticación exitosa, mostrando aplicación");
+          showApplication();
+          
+          // Cargar profesionales desde la API
+          await loadProfessionalsFromAPI();
+          
+          // Configurar el formulario de trabajo
+          setupJobForm();
+          
+        } catch (error) {
+          debug("Error en verificación de autenticación", error.message);
+          console.error("Error en verificación de autenticación:", error);
+          redirectToLogin();
+        }
+      }
+
+      // Función para validar datos de autenticación
+      function isValidAuthData(authData) {
+        return authData && 
+               authData.isAuthenticated && 
+               authData.user && 
+               authData.user.id && 
+               authData.token;
+      }
+
+      // Función para redirigir al login
+      function redirectToLogin() {
+        // Limpiar localStorage
+        localStorage.removeItem('authData');
+        localStorage.removeItem('auth');
+        
+        // Mostrar mensaje antes de redirigir
+        const authLoading = document.getElementById('authLoading');
+        const loadingText = authLoading.querySelector('.loading-text');
+        loadingText.textContent = 'Redirigiendo al login...';
+        
+        // Redirigir después de un breve delay
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+      }
+
+      // Función para mostrar la aplicación
+      function showApplication() {
+        // Ocultar pantalla de carga
+        document.getElementById('authLoading').style.display = 'none';
+        
+        // Mostrar elementos principales
+        document.getElementById('mainHeader').style.display = 'flex';
+        document.getElementById('feed').style.display = 'block';
+      }
+
+      // Función para cargar datos del usuario desde localStorage
+      async function loadUserData() {
+        try {
+          debug("Intentando cargar datos de usuario");
+          
+          // Intentar diferentes formas de almacenamiento
+          let authData = null;
+          
+          // Método 1: Buscar en localStorage con clave 'auth'
+          const storedAuth = localStorage.getItem('auth');
+          if (storedAuth) {
+            try {
+              authData = JSON.parse(storedAuth);
+              debug("Datos encontrados con clave 'auth'", authData);
+            } catch (e) {
+              debug("Error al parsear 'auth'", e.message);
+            }
+          }
+          
+          // Método 2: Buscar en localStorage con clave 'authData'
+          if (!authData) {
+            const storedAuthData = localStorage.getItem('authData');
+            if (storedAuthData) {
+              try {
+                authData = JSON.parse(storedAuthData);
+                debug("Datos encontrados con clave 'authData'", authData);
+              } catch (e) {
+                debug("Error al parsear 'authData'", e.message);
+              }
+            }
+          }
+          
+          // Método 3: Buscar directamente en localStorage
+          if (!authData) {
+            for (let i = 0; i < localStorage.length; i++) {
+              const key = localStorage.key(i);
+              try {
+                const value = localStorage.getItem(key);
+                const parsedValue = JSON.parse(value);
+                
+                if (parsedValue && parsedValue.isAuthenticated && parsedValue.user && parsedValue.token) {
+                  authData = parsedValue;
+                  debug(`Datos encontrados con clave '${key}'`, authData);
+                  break;
+                }
+              } catch (e) {
+                // Ignorar errores de parseo
+              }
+            }
+          }
+          
+          if (!authData) {
+            debug("No se encontraron datos de autenticación válidos");
+            return null;
+          }
+          
+          // Validar estructura de datos
+          if (!isValidAuthData(authData)) {
+            debug("Estructura de datos de autenticación inválida");
+            return null;
+          }
+          
+          // Asignar datos globales
+          currentUser = authData.user;
+          authToken = authData.token;
+          
+          // Actualizar mensaje de bienvenida
+          const welcomeMessage = document.getElementById("welcomeMessage");
+          welcomeMessage.innerHTML = `Bienvenido ${currentUser.nombre_completo || currentUser.username} 
+            <span class="user-type-badge ${currentUser.tipo}">${capitalizeFirstLetter(currentUser.tipo)}</span>`;
+          
+          // Actualizar botón de perfil
+          const profileButton = document.getElementById("profileButton");
+          profileButton.textContent = `Mi perfil (${currentUser.username})`;
+          
+          debug("Autenticación exitosa", { 
+            username: currentUser.username, 
+            tipo: currentUser.tipo, 
+            id: currentUser.id 
+          });
+          
+          return authData;
+          
+        } catch (error) {
+          debug("Error en loadUserData", error.message);
+          console.error("Error al cargar datos del usuario:", error);
+          return null;
+        }
+      }
 
       // Función para depuración
       function debug(message, data = null) {
@@ -759,118 +949,6 @@
         
         // También log en consola
         console.log(logMessage);
-      }
-
-      // Función para cargar datos del usuario desde localStorage
-      function loadUserData() {
-        try {
-          debug("Intentando cargar datos de usuario");
-          
-          // Intentar diferentes formas de almacenamiento
-          let authData = null;
-          
-          // Método 1: Buscar en localStorage con clave 'authData'
-          const storedAuthData = localStorage.getItem('authData');
-          if (storedAuthData) {
-            try {
-              authData = JSON.parse(storedAuthData);
-              debug("Datos encontrados con clave 'authData'", authData);
-            } catch (e) {
-              debug("Error al parsear 'authData'", e.message);
-            }
-          }
-          
-          // Método 2: Buscar directamente en localStorage
-          if (!authData) {
-            for (let i = 0; i < localStorage.length; i++) {
-              const key = localStorage.key(i);
-              try {
-                const value = localStorage.getItem(key);
-                const parsedValue = JSON.parse(value);
-                
-                if (parsedValue && parsedValue.isAuthenticated && parsedValue.user && parsedValue.token) {
-                  authData = parsedValue;
-                  debug(`Datos encontrados con clave '${key}'`, authData);
-                  break;
-                }
-              } catch (e) {
-                // Ignorar errores de parseo
-              }
-            }
-          }
-          
-          // Si no se encontraron datos, usar datos de ejemplo para desarrollo
-          if (!authData) {
-            debug("No se encontraron datos de autenticación en localStorage");
-            
-            // Usar datos de ejemplo proporcionados por el usuario
-            authData = {
-              "isAuthenticated": true,
-              "user": {
-                "activo": true,
-                "actualizado_en": "2025-05-23T18:51:49",
-                "calificacion_promedio": 0,
-                "ciudad": "123123",
-                "creado_en": "2025-05-19T18:12:30",
-                "descripcion": null,
-                "edad": 123,
-                "email": "12312313@ajwikdbawd.com",
-                "especialidad": "tatuador",
-                "experiencia": null,
-                "fecha_registro": "2025-05-19T18:12:30",
-                "foto_perfil": null,
-                "genero": "masculino",
-                "id": 13,
-                "is_admin": false,
-                "nombre_completo": "OIPNWdionwaiodnawd",
-                "telefono": "123123123123",
-                "tipo": "profesional",
-                "ultimo_login": "2025-05-23T18:51:49",
-                "username": "OIPNWdionwaiodnawd"
-              },
-              "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODA0NDMwOSwianRpIjoiZmIxMjQ3ZDYtYTA5ZC00Njc4LTgzMWYtZmVlYzk2MTlmMGI1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJpZGVudGl0eSI6IjEzIiwiaXNfYWRtaW4iOmZhbHNlLCJ0aXBvIjoicHJvZmVzaW9uYWwiLCJ1c2VybmFtZSI6Ik9JUE5XZGlvbndhaW9kbmF3ZCIsImVtYWlsIjoiMTIzMTIzMTNAYWp3aWtkYmF3ZC5jb20ifSwibmJmIjoxNzQ4MDQ0MzA5LCJleHAiOjE3NDgwNDc5MDl9.5W55mwUEz6NtFEiT442_5xo2asVY05NWqb-F47n8a7o",
-              "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODA0NDMwOSwianRpIjoiYTQ1YzFhNGMtYTUxZC00ZGVlLWJmNGMtYzY1ZmU0M2I4NTJiIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOnsiaWRlbnRpdHkiOiIxMyIsImlzX2FkbWluIjpmYWxzZSwidGlwbyI6InByb2Zlc2lvbmFsIiwidXNlcm5hbWUiOiJPSVBOV2Rpb253YWlvZG5hd2QiLCJlbWFpbCI6IjEyMzEyMzEzQGFqd2lrZGJhd2QuY29tIn0sIm5iZiI6MTc0ODA0NDMwOSwiZXhwIjoxNzUwNjM2MzA5fQ.VkMkWTZQ2JeVzMH_D-bUCgq_taiZ4CJCDLwkDNaAtws"
-            };
-            
-            debug("Usando datos de ejemplo para desarrollo", authData);
-          }
-          
-          if (authData && authData.isAuthenticated && authData.user) {
-            currentUser = authData.user;
-            authToken = authData.token;
-            
-            // Actualizar mensaje de bienvenida
-            const welcomeMessage = document.getElementById("welcomeMessage");
-            welcomeMessage.innerHTML = `Bienvenido ${currentUser.nombre_completo || currentUser.username} 
-              <span class="user-type-badge ${currentUser.tipo}">${capitalizeFirstLetter(currentUser.tipo)}</span>`;
-            
-            // Actualizar botón de perfil
-            const profileButton = document.getElementById("profileButton");
-            profileButton.textContent = `Mi perfil (${currentUser.username})`;
-            
-            // Verificar si el usuario es un profesional
-            if (currentUser.tipo === 'profesional') {
-              debug("Usuario identificado como profesional");
-            }
-            
-            debug("Autenticación exitosa", { 
-              username: currentUser.username, 
-              tipo: currentUser.tipo, 
-              id: currentUser.id 
-            });
-          } else {
-            throw new Error("Datos de autenticación inválidos");
-          }
-        } catch (error) {
-          debug("Error en loadUserData", error.message);
-          console.error("Error al cargar datos del usuario:", error);
-          
-          // En lugar de redirigir, mostrar un mensaje y continuar
-          const welcomeMessage = document.getElementById("welcomeMessage");
-          welcomeMessage.innerHTML = `<span style="color: #f5a623;">Visitante</span> - Explora profesionales <small>(inicia sesión para solicitar trabajos)</small>`;
-          
-          showToast('Estás navegando como invitado. Algunas funciones están limitadas.', 'error');
-        }
       }
 
       // Función para cargar profesionales desde la API
@@ -1027,7 +1105,7 @@
           
           if (professional.foto_perfil) {
               // Intenta cargar la imagen del perfil
-              imgElement.src = `http://192.168.1.103:5000/api/imagen/${professional.foto_perfil}`;
+              imgElement.src = `https://site.mizaptech.site/api/imagen/${professional.foto_perfil}`;
               
               // Si falla, intenta con la imagen local
               imgElement.onerror = function() {
@@ -1156,6 +1234,7 @@
         // Verificar si el usuario está autenticado y es cliente
         if (!currentUser) {
           showToast('Para solicitar un trabajo, primero debes iniciar sesión', 'error');
+          setTimeout(() => redirectToLogin(), 2000);
           return;
         }
         
@@ -1205,7 +1284,7 @@
           // Verificar si el usuario está autenticado
           if (!currentUser || !authToken) {
             showToast('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'error');
-            setTimeout(() => window.location.href = 'index.html', 2000);
+            setTimeout(() => redirectToLogin(), 2000);
             return;
           }
           
@@ -1350,6 +1429,7 @@
       function logout() {
         debug("Cerrando sesión");
         localStorage.removeItem('authData');
+        localStorage.removeItem('auth');
         window.location.href = "index.html";
       }
 
