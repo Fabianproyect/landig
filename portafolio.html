@@ -6,211 +6,212 @@
   <title>WildInk</title>
   <link href="css/styles.css" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      scroll-behavior: smooth;
-    }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+  }
 
-    body, html {
-      font-family: 'Montserrat', sans-serif;
-      color: white;
-      height: 100%;
-    }
+  html, body {
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    height: 100%;
+  }
 
-    /* 🧭 Barra de navegación */
-    nav {
-      background-color: #1c1c1c;
-      color: white;
-      padding: 15px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 100;
-    }
+  /* 🧭 Barra de navegación */
+  nav {
+    background-color: #1c1c1c;
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+  }
 
-    nav .logo {
-      font-family: cursive;
-      color: #ffc107;
-      font-size: 1.4rem;
-    }
+  nav .logo {
+    font-family: cursive;
+    color: #ffc107;
+    font-size: 1.4rem;
+  }
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
 
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
+  nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
 
-    .login-btn {
-      background-color: #ffc107;
-      color: #1c1c1c;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-      text-decoration: none;
-    }
+  .login-btn {
+    background-color: #ffc107;
+    color: #1c1c1c;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-decoration: none;
+  }
 
-    .login-btn:hover {
-      background-color: #e0a800;
-    }
+  .login-btn:hover {
+    background-color: #e0a800;
+  }
 
-    /* 🖼️ Hero principal */
-    .hero {
-      background: url('https://www.malatintamagazine.com/wp-content/uploads/2020/03/Tinta-al-Alma-portada.jpg') no-repeat center center/cover;
-      height: 100vh;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 0 20px;
-    }
+  /* 🖼️ Hero principal */
+  .hero {
+    background: url('https://www.malatintamagazine.com/wp-content/uploads/2020/03/Tinta-al-Alma-portada.jpg') no-repeat center center/cover;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+  }
 
-    .hero .fondo-gris {
-      background: rgba(33, 33, 33, 0.7);
-      padding: 40px;
-      border-radius: 20px;
-      display: inline-block;
-      margin: auto;
-    }
+  .hero .fondo-gris {
+    background: rgba(33, 33, 33, 0.7);
+    padding: 40px;
+    border-radius: 20px;
+    display: inline-block;
+    margin: auto;
+  }
 
-    .hero .subtitulo {
-      font-style: italic;
-      color: #cccccc;
-      margin-bottom: 10px;
-    }
+  .hero .subtitulo {
+    font-style: italic;
+    color: #cccccc;
+    margin-bottom: 10px;
+  }
 
-    .hero h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
 
-    .hero .btn {
-      background-color: #ffc107;
-      color: black;
-      padding: 15px 25px;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
+  .hero .btn {
+    background-color: #ffc107;
+    color: black;
+    padding: 15px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
 
-    .hero .btn:hover {
-      background-color: #e0a800;
-    }
+  .hero .btn:hover {
+    background-color: #e0a800;
+  }
 
-    /* 🔻 Sección: Quiénes somos */
-    #quienes-somos {
-      background: #f5f5f5 url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
-      color: #1c1c1c;
-      padding: 100px 20px;
-      text-align: center;
-    }
+  /* 🔻 Sección: Quiénes somos */
+  #quienes-somos {
+    background: #f5f5f5 url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+    color: #1c1c1c;
+    padding: 100px 20px;
+    text-align: center;
+  }
 
-    #quienes-somos .contenido {
-      max-width: 700px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
+  #quienes-somos .contenido {
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
 
-    #quienes-somos h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #e07b00;
-    }
+  #quienes-somos h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #e07b00;
+  }
 
-    #quienes-somos p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
+  #quienes-somos p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
 
-    /* 🎨 Sección: Servicios */
-    #servicios {
-      background: #f5f5f5 url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
-      padding: 100px 20px;
-    }
+  /* 🎨 Sección: Servicios */
+  #servicios {
+    background: #f5f5f5 url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+    padding: 100px 20px;
+  }
 
-    .tarjetas-servicios {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+  .tarjetas-servicios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-    .tarjeta {
-      background-color: #ffc107;
-      border-radius: 15px;
-      width: 250px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      position: relative;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      padding-bottom: 20px;
-    }
+  .tarjeta {
+    background-color: #ffc107;
+    border-radius: 15px;
+    width: 250px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    padding-bottom: 20px;
+  }
 
-    .tarjeta .img-container {
-      width: 100%;
-      height: 150px;
-      background-color: #ddd; /* Cambia esto por tu imagen */
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      background-position: center;
-      background-size: cover;
-    }
+  .tarjeta .img-container {
+    width: 100%;
+    height: 150px;
+    background-color: #ddd;
+    background-position: center;
+    background-size: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
 
-    .tarjeta h3 {
-      text-align: center;
-      margin: 15px 0 10px;
-      font-size: 1.2rem;
-    }
+  .tarjeta h3 {
+    text-align: center;
+    margin: 15px 0 10px;
+    font-size: 1.2rem;
+  }
 
-    .tarjeta .descripcion {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.4s ease, opacity 0.4s ease;
-      padding: 0 15px;
-      font-size: 0.95rem;
-      text-align: center;
-    }
+  .tarjeta .descripcion {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+    padding: 0 15px;
+    font-size: 0.95rem;
+    text-align: center;
+  }
 
-    .tarjeta:hover {
-      transform: translateY(-10px);
-    }
+  .tarjeta:hover {
+    transform: translateY(-10px);
+  }
 
-    .tarjeta:hover .descripcion {
-      max-height: 120px;
-      opacity: 1;
-      margin-top: 10px;
-    }
+  .tarjeta:hover .descripcion {
+    max-height: 120px;
+    opacity: 1;
+    margin-top: 10px;
+  }
 
-    /* Color del título de la sección */
-    h2 {
-      text-align: center;
-      color: #e07b00;
-      font-size: 2rem;
-      margin-bottom: 40px;
-    }
-  </style>
+  /* Título general de secciones */
+  h2 {
+    text-align: center;
+    color: #e07b00;
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+</style>
+
 </head>
 <body>
 
@@ -224,7 +225,7 @@
       <li><a href="#">Dónde nos encontramos</a></li>
       <li><a href="#">Comunidad</a></li>
     </ul>
-    <a class="login-btn" href="login.html">Iniciar sesión</a>
+    <a class="login-btn" href="inicioSesion.html">Iniciar sesión</a>
   </nav>
 
   <!-- 🖼️ Sección principal -->

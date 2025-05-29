@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login & Registro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+ 
+  <style>
+  * {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: url('https://joseppons.com/formacion/wp-content/uploads/2020/11/servicios-salon-barberia.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #f0f0f0;
+  }
+
+  .container {
+    background-color: rgba(58, 58, 58, 0.85); 
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    width: 380px;
+    padding: 40px 30px;
+    margin-left: 200px; 
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .container h2 {
+    margin: 0 0 20px;
+    font-weight: 700;
+    font-size: 24px;
+    color: #f5a623;
+    text-align: center;
+  }
+
+  .container form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container input {
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border: 1px solid #777;
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+
+  .container input:focus {
+    outline: none;
+    border-color: #f5a623;
+    box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.2);
+  }
+
+  .container button {
+    padding: 12px;
+    background: #f5a623;
+    color: #1f1f1f;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+  }
+
+  .container button:hover {
+    background: #e59400;
+  }
+
+  .switch {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #ccc;
+  }
+
+  .switch a {
+    color: #f5a623;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .form {
+    display: none;
+  }
+
+  .form.active {
+    display: block;
+    animation: fadeIn 0.4s ease-in-out;
+  }
+
+  .error-message {
+    color: #ff6b6b;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .input-hint {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 15px;
+    margin-top: -5px;
+    padding-left: 5px;
+  }
+
+  .info {
+    position: fixed;
+    top: 40px;
+    right: 0;
+    bottom: 40px;
+    width: 600px; 
+    background-color: rgba(58, 58, 58, 0.95); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: white;
+    text-align: center;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    z-index: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- RESPONSIVE CSS ---------- */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 360px;
+      margin: 0;
+    }
+
+    .info {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 30px 20px;
+    }
+
+    .container h2 {
+      font-size: 20px;
+    }
+
+    .container input,
+    .container button {
+      font-size: 14px;
+    }
+  }
+</style>
+
+</head>
+<body>
+
+  <!-- FORMULARIO -->
+  <div class="container">
+    <div id="loginForm" class="form active">
+      <h2>Iniciar Sesión</h2>
+      <form id="loginFormElement">
+        <div id="loginErrorMessage" class="error-message" style="display: none;"></div>
+        <input type="text" id="loginIdentifier" placeholder="Usuario o correo electrónico" required>
+        <div class="input-hint">Puedes usar tu nombre de usuario o correo electrónico</div>
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        <button type="submit">Entrar</button>
+      </form>
+      <div class="switch">¿No tienes cuenta? <a href="./elige-profesional-cliente.html">Regístrate</a></div>
+    </div>
+
+    <div id="registerForm" class="form">
+      <h2>Registrarse</h2>
+      <form id="registerFormElement">
+        <div id="registerErrorMessage" class="error-message" style="display: none;"></div>
+        <input type="text" id="registerName" placeholder="Nombre completo" required>
+        <input type="email" id="registerEmail" placeholder="Correo electrónico" required>
+        <input type="password" id="registerPassword" placeholder="Contraseña" required>
+        <button type="submit">Registrarse</button>
+      </form>
+      <div class="switch">¿Ya tienes cuenta? <a onclick="showLogin()">Inicia sesión</a></div>
+    </div>
+  </div>
+
+  
+  <div class="info">
+    <div>
+      <h2>Bienvenido</h2>
+      <p>Aquí puedes iniciar sesión o registrarte para comenzar a explorar la plataforma. ¡Bienvenido a bordo!</p>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function showRegister() {
+      document.getElementById('loginForm').classList.remove('active');
+      document.getElementById('registerForm').classList.add('active');
+      document.getElementById('loginErrorMessage').style.display = 'none';
+    }
+
+    function showLogin() {
+      document.getElementById('registerForm').classList.remove('active');
+      document.getElementById('loginForm').classList.add('active');
+      document.getElementById('registerErrorMessage').style.display = 'none';
+    }
+
+    document.getElementById('loginFormElement').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const identifier = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorElement = document.getElementById('loginErrorMessage');
+      errorElement.style.display = 'none';
+
+      if (!identifier || !password) {
+        errorElement.textContent = 'Por favor completa todos los campos';
+        errorElement.style.display = 'block';
+        return;
+      }
+
+      try {
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Iniciando sesión...';
+        submitButton.disabled = true;
+
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username_or_email: identifier, password: password })
+        });
+
+        const data = await response.json();
+        submitButton.textContent = originalButtonText;
+        submitButton.disabled = false;
+
+        if (response.ok) {
+          localStorage.setItem('auth', JSON.stringify({
+            isAuthenticated: true,
+            user: {
+              identifier: identifier,
+              tipo: data.user.tipo,
+              username: data.user.username,
+              email: data.user.email
+            },
+            tokens: {
+              access: data.access_token,
+              refresh: data.refresh_token
+            }
+          }));
+          if (data.user.tipo === 'cliente') {
+            window.location.href = 'pagina.principal.html';
+          } else if (data.user.tipo === 'profesional') {
+            window.location.href = 'dashboard-profesional.html';
+          } else {
+            window.location.href = 'dashboard-admin.html';
+          }
+        } else {
+          errorElement.textContent = data.message || 'Credenciales incorrectas';
+          errorElement.style.display = 'block';
+        }
+      } catch (error) {
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        submitButton.textContent = 'Entrar';
+        submitButton.disabled = false;
+
+        errorElement.textContent = 'Error de conexión con el servidor';
+        errorElement.style.display = 'block';
+        console.error('Error:', error);
+      }
+    });
+
+    document.getElementById('registerFormElement').addEventListener('submit', function(e) {
+      e.preventDefault();
+      window.location.href = './elige-profesional-cliente.html';
+    });
+  </script>
+</body>
+</html>
